@@ -1,4 +1,14 @@
 id, submisson_time, view_number, vote_number, title, message, image
-0,1493368154,29,7,SG93IHRvIG1ha2UgbGlzdHMgaW4gUHl0aG9uPw==,SSBhbSB0b3RhbGx5IG5ldyB0byB0aGlzLCBhbnkgaGludHM/,
-1,1493068124,15,9,V29yZHByZXNzIGxvYWRpbmcgbXVsdGlwbGUgalF1ZXJ5IFZlcnNpb25z,SSBkZXZlbG9wZWQgYSBwbHVnaW4gdGhhdCB1c2VzIHRoZSBqcXVlcnkgYm9va2xldCBwbHVnaW4gKGh0dHA6Ly9idWlsdGJ5d2lsbC5jb20vYm9va2xldC8jLykgdGhpcyBwbHVnaW4gYmluZHMgYSBmdW5jdGlvbiB0byAkIHNvIEkgY2FubiBjYWxsICQoIi5teUJvb2siKS5ib29rbGV0KCk7CgpJIGNvdWxkIGVhc3kgbWFuYWdpbmcgdGhlIGxvYWRpbmcgb3JkZXIgd2l0aCB3cF9lbnF1ZXVlX3NjcmlwdCBzbyBmaXJzdCBJIGxvYWQganF1ZXJ5IHRoZW4gSSBsb2FkIGJvb2tsZXQgc28gZXZlcnl0aGluZyBpcyBmaW5lLgoKQlVUIGluIG15IHRoZW1lIGkgYWxzbyB1c2luZyBqcXVlcnkgdmlhIHdlYnBhY2sgc28gdGhlIGxvYWRpbmcgb3JkZXIgaXMgbm93IGZvbGxvd2luZzoKCmpxdWVyeQpib29rbGV0CmFwcC5qcyAoYnVuZGxlZCBmaWxlIHdpdGggd2VicGFjaywgaW5jbHVkaW5nIGpxdWVyeSk=,aW1hZ2VzL2ltYWdlMS5wbmc=
-2,1493015432,1364,57,RHJhd2luZyBjYW52YXMgd2l0aCBhbiBpbWFnZSBwaWNrZWQgd2l0aCBDb3Jkb3ZhIENhbWVyYSBQbHVnaW4=,SSdtIGdldHRpbmcgYW4gaW1hZ2UgZnJvbSBkZXZpY2UgYW5kIGRyYXdpbmcgYSBjYW52YXMgd2l0aCBmaWx0ZXJzIHVzaW5nIFBpeGkgSlMuIEl0IHdvcmtzIGFsbCB3ZWxsIHVzaW5nIGNvbXB1dGVyIHRvIGdldCBhbiBpbWFnZS4gQnV0IHdoZW4gSSdtIG9uIElPUywgaXQgdGhyb3dzIGVycm9ycyBzdWNoIGFzIGNyb3NzIG9yaWdpbiBpc3N1ZSwgb3IgdGhhdCBJJ20gdHJ5aW5nIHRvIHVzZSBhbiB1bmtub3duIGZvcm1hdC4KClRoaXMgaXMgdGhlIGNvZGUgSSdtIHVzaW5nIHRvIGRyYXcgdGhlIGltYWdlICh0aGF0IHdvcmtzIG9uIHdlYi9kZXNrdG9wIGJ1dCBub3QgY29yZG92YSBidWlsdCBpb3MgYXBwKQ==,
+0,1493368154,29,7,"How to make lists in Python?","I am totally new to this, any hints?",
+1,1493068124,15,9,"Wordpress loading multiple jQuery Versions","I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $(".myBook").booklet();
+
+I could easy managing the loading order with wp_enqueue_script so first I load jquery then I load booklet so everything is fine.
+
+BUT in my theme i also using jquery via webpack so the loading order is now following:
+
+jquery
+booklet
+app.js (bundled file with webpack, including jquery)","images/image1.png"
+2,1493015432,1364,57,"Drawing canvas with an image picked with Cordova Camera Plugin","I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
+
+This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",

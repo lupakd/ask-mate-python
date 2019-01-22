@@ -1,1 +1,57 @@
 <!DOCTYPE html>
+<html>
+<head>
+<title>Question {{q_id}}</title>
+</head>
+<body>
+    <h1>{%  for line in question %}
+            {%  if q_id == line["id"]  %}
+                {{line["title"]}}
+    </h1>
+    <h3>Question ID</h3>
+    <p>{{line["id"]}}</p>
+    <h3>Date:</h3>
+    <p>{{line["submission_time"]}}</p>
+    <h3>Views:</h3>
+    <p>{{line["view_number"]}}</p>
+    <h3>Vote point:</h3>
+    <p>{{line["vote_number"]}}</p>
+    <h3>Explanation</h3>
+    <p>{{line["message"]}}</p>
+
+        {%  endif  %}
+        {%  endfor  %}
+
+
+    <h2>Answers:</h2>
+
+
+     <p>  {%  for line in answer  %}
+          {%  if q_id == line["question_id"]  %}
+    ___________________________________________________
+    <p>{{line["message"]}}</p>
+    <p>{{line["vote_number"]}}</p>
+    <p>{{line["submission_time"]}}</p>
+    <br>
+
+          {%  endif %}
+          {%  endfor  %}
+
+
+
+
+
+
+
+
+
+</body>
+
+
+
+
+
+
+
+
+</html>

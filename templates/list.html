@@ -5,8 +5,25 @@
 	<title>HomefkinPAge</title>
 </head>
 <body>
-	<h1>A két kispöcs és a nagyapó kalandjai a Webszobában</h1>
+	<h1>AskMate</h1>
+	<table>
+		<thead>
+		<th>Id</th>
+		<th>Date</th>
+		<th>Views</th>
+		<th>Votes</th>
+		<th>Title</th>
+		</thead>
+		<tbody>
+		{%for i in dict%}
+			<td>{{i["id"]}}</td>
+			<td>{{i["submission_time"]}}</td>
+			<td>{{i["view_number"]}}</td>
+			<td>{{i["vote_number"]}}</td>
+			<td>{{i["title"]}}</td>
+		{% endfor %}}
+		</tbody>
+	</table>
 
-<h2> All credits goes to me</h2>
 </body>
 </html>

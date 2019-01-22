@@ -1,13 +1,18 @@
-def read_data(data):
-    with open(data, 'r') as File:
-        return File
+import csv
+
+columntitles = ['id','submission_time','view_number','vote_number','title','message','image']
 
 
-def write_data(data):
-    with open(data, "w") as File:
-        return File
+def read_data(filename):
+    list_of_data = []
+    with open(filename, 'r') as File:
+        for row in csv.DictReader(File):
+            list_of_data.append(dict(row))
+        return list_of_data
 
-
-def append_to_data():
-    with open(data, 'a+') as File:
-        return File
+#
+# def append_to_data(filename):
+#     with open(filename, 'a+') as File:
+#         writer = csv.DictWriter(File, columntitles=columntitles)
+#         writer.writerow()
+#         pass

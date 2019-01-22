@@ -16,12 +16,14 @@
 		</thead>
 		<tbody>
 		{%for i in dict%}
+        <tr>
 			<td>{{i["id"]}}</td>
 			<td>{{i["submission_time"]}}</td>
 			<td>{{i["view_number"]}}</td>
 			<td>{{i["vote_number"]}}</td>
 			<td>{{i["title"]}}</td>
-		{% endfor %}}
+        </tr>
+		{% endfor %}
 		</tbody>
 	</table>
 

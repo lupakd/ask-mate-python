@@ -9,15 +9,17 @@
             {%  if q_id == line["id"]  %}
                 {{line["title"]}}
     </h1>
-    <h3>Question ID</h3>
+    <h3>Question ID:</h3>
     <p>{{line["id"]}}</p>
     <h3>Date:</h3>
     <p>{{line["submission_time"]}}</p>
     <h3>Views:</h3>
     <p>{{line["view_number"]}}</p>
     <h3>Vote point:</h3>
-    <p>{{line["vote_number"]}} <a href="/vote_up/{{ line['id'] }}">up</a> <a href="/vote_down/{{ line['id'] }}">down</a></p>
-    <h3>Explanation</h3>
+    <p>{{line["vote_number"]}} <button onclick="location.href ='/vote_up/{{ line['id'] }}'" type="button">/\</button> <button onclick="location.href ='/vote_down/{{ line['id'] }}'" type="button">\/</button></p>
+    <h3>Question:</h3>
+    <p>{{ line['title'] }}</p>
+    <h3>Details:</h3>
     <p>{{line["message"]}}</p>
 
         {%  endif  %}

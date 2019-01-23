@@ -23,8 +23,8 @@ def display(question_id):
 def new_answer(question_id):
     if request.method == 'POST':
         new_answer = request.form.get('new_answer')
-        print(new_answer)
-        return redirect('/question/' + question_id)
+        data_logic.add_new_answer(new_answer, question_id)
+        return redirect('/questions/' + question_id)
 
     return render_template("post_answer.html", q_id=question_id)
 

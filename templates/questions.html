@@ -4,6 +4,7 @@
 <title>Question {{q_id}}</title>
 </head>
 <body>
+<p><a href="/question/{{ q_id }}/new-answer">New Answer</a></p>
     <h1>{%  for line in question %}
             {%  if q_id == line["id"]  %}
                 {{line["title"]}}

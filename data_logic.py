@@ -1,4 +1,8 @@
 import connection
+from datetime import datetime
+
+question_fieldnames = ['id','submission_time','view_number','vote_number','title','message','image']
+answer_fieldnames = ['id','submission_time','vote_number','question_id','message','image']
 
 
 def new_id():
@@ -33,3 +37,43 @@ def display_question():
     answer = get_all_answers()
     question = get_all_questions()
     return answer, question
+
+def new_question(new_data):
+    connection.append_to_data('sample_data/question.csv', new_data, question_fieldnames)
+
+def get_date_time():
+    return str(datetime.now())
+
+
+def add_question(title, details):
+    all_questions = get_all_questions()
+    question_to_add = {
+        question_fieldnames[0]: int(all_questions[-1]['id']) + 1,
+        question_fieldnames[1]: get_date_time(),
+        question_fieldnames[2]: 0,
+        question_fieldnames[3]: 0,
+        question_fieldnames[4]: title,
+        question_fieldnames[5]: details,
+        question_fieldnames[6]: 'image'
+    }
+    return question_to_add
+
+def add_view(question_id):
+
+    questions = get_all_questions()
+    for question in questions:
+        if question['id'] == question_id:
+            question['view_number'] = int(question['view_number']) + 1
+    connection.update_data('sample_data/question.csv', questions, question_fieldnames)
+
+
+def vote_counter(question_id, direction):
+    questions = get_all_questions()
+    for question in questions:
+        if question['id'] == question_id:
+            question['view_number'] = int(question['view_number']) -1
+            if direction == 'up':
+                question['vote_number'] = int(question['vote_number']) + 1
+            else:
+                question['vote_number'] = int(question['vote_number']) - 1
+    connection.update_data('sample_data/question.csv', questions, question_fieldnames)

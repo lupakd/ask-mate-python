@@ -1,5 +1,3 @@
-from typing import Dict, List, Any
-
 from flask import Flask, render_template, request, redirect
 import data_logic
 
@@ -15,6 +13,7 @@ def route_list():
 
 @app.route('/questions/<question_id>')
 def display(question_id):
+    data_logic.add_view(question_id)
     answer, question = data_logic.display_question()
     return render_template("questions.html", q_id=question_id, answer=answer, question=question)
 
@@ -27,6 +26,27 @@ def new_answer(question_id):
         return redirect('/questions/' + question_id)
 
     return render_template("post_answer.html", q_id=question_id)
+
+@app.route('/add_question', methods=['GET','POST'])
+def route_add_question():
+    if request.method == 'POST':
+        question_to_add = data_logic.add_question(request.form.get('new_question'),request.form.get('details'))
+        data_logic.new_question(question_to_add)
+        return redirect('/questions/'+str(question_to_add['id']))
+    else:
+        return render_template('add_question.html')
+
+
+@app.route('/vote_up/<question_id>')
+def vote_up(question_id):
+    data_logic.vote_counter(question_id, 'up')
+    return redirect('/questions/'+question_id)
+
+
+@app.route('/vote_down/<question_id>')
+def vote_down(question_id):
+    data_logic.vote_counter(question_id, 'down')
+    return redirect('/questions/' + question_id)
 
 
 if __name__ == "__main__":

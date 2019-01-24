@@ -6,7 +6,7 @@ answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'mes
 
 
 def new_id():
-    return str(get_all_questions()[-1]['id'] + 1)
+    return int(get_all_questions()[-1]['id']) + 1
 
 
 def get_all_questions():

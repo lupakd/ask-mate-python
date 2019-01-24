@@ -95,8 +95,8 @@ def delete_q(question_id):
 
 def delete_a(question_id):
     answers = get_all_answers()
-    new_answers = []
+    new_answers = answers.copy()
     for answer in answers:
-        if answer['question_id'] != question_id:
-            new_answers.append(answer)
+        if answer['question_id'] == question_id:
+            new_answers.remove(answer)
     connection.update_data('sample_data/answer.csv', new_answers, answer_fieldnames)

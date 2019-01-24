@@ -20,6 +20,7 @@
     <p>{{line["vote_number"]}} <button onclick="location.href ='/vote_up/{{ line['id'] }}'" type="button">/\</button> <button onclick="location.href ='/vote_down/{{ line['id'] }}'" type="button">\/</button></p>
     <h3>Details:</h3>
     <p>{{line["message"]}}</p>
+    <p><a href="/question/{{ q_id }}/edit">Edit Question</a></p>
 
         {%  endif  %}
         {%  endfor  %}

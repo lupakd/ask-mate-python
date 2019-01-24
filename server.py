@@ -24,8 +24,8 @@ def new_answer(question_id):
         new_answer = request.form.get('new_answer')
         data_logic.add_new_answer(new_answer, question_id)
         return redirect('/questions/' + question_id)
-
     return render_template("post_answer.html", q_id=question_id)
+
 
 @app.route('/add_question', methods=['GET','POST'])
 def route_add_question():
@@ -47,6 +47,18 @@ def vote_up(question_id):
 def vote_down(question_id):
     data_logic.vote_counter(question_id, 'down')
     return redirect('/questions/' + question_id)
+
+
+@app.route('/question/<question_id>/edit', methods=['GET','POST'])
+def edit(question_id):
+    questions = data_logic.get_all_questions()
+    if request.method == "GET":
+        return render_template("edit.html", q_id= question_id, questions=questions)
+    else:
+        data_logic.edit_question(question_id, request.form.get("edit_q"))
+
+        return redirect("/questions/"+str(question_id))
+
 
 
 if __name__ == "__main__":

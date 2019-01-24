@@ -1,8 +1,6 @@
 id,submission_time,view_number,vote_number,title,message,image
-0,1493368154,82,19,How to make lists in Python?,"I am totally new to this, any hints?
-Edited
-Edited
-{{Edited}}
+0,1493368154,163,19,How to make lists in Python?,"I am totally new to this, any hints?
+
 {{Edited}}",
 1,1493068124,25,11,Wordpress loading multiple jQuery Versions,"I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
 
@@ -16,10 +14,10 @@ app.js (bundled file with webpack, including jquery)",images/image1.png
 3,2019-01-23 14:33:19.733970,20,0,ékg,ljhg,image
 4,2019-01-23 15:02:39.046642,17,5,.jhkvljhg,ljhgfljhgf,image
 5,2019-01-23 15:09:34.003286,8,3,ékgjéikg,ékhgéhigéhig,image
-6,2019-01-23 20:26:49.704446,10,3,a new question,"how this works
+6,2019-01-23 20:26:49.704446,12,3,a new question,"how this works
 
 as time is running short.",image
-7,2019-01-23 20:59:17.774766,5,-1,lkjhgékhg,"ékhvékhbékh
+7,2019-01-23 20:59:17.774766,14,0,lkjhgékhg,"ékhvékhbékh
 kdjgbdflkjgbhfdégkbhj",image
 8,2019-01-24 13:04:49.248120,2,0,mivaan,"hello
 ",image

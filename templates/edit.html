@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta charset="UTF-8">
     <title>Editing</title>
-<h2>{%  for row in questions %}
+<h1>{%  for row in questions %}
         {% if row["id"] == q_id %}
             {{ row["title"] }}
         {% endif %}
     {% endfor %}
-</h2>
+</h1>
 </head>
 <body>
 

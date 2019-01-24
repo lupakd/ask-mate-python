@@ -3,7 +3,7 @@ body {
     font-family: arial, helvetica, sans-serif;
     font-size: 28px;
     color: #000000;
-    background-color: #b6fff3;
+    background-color: #b6fff6;
     margin: 20px;
     padding: 0;
 }
@@ -12,6 +12,8 @@ body {
 
 p {
     line-height: 21px;
+    color: #2a2519;
+    text-align: center;
 }
 
 h1 {
@@ -39,6 +41,7 @@ h2 {
 }
 
 h3 {
+    text-align: center;
     color: #999;
     font-size: 1.25em;
 }
@@ -50,7 +53,7 @@ img {
 }
 
 a {
-    text-align: right;
+    text-decoration: none;
 }
 
 strong {
@@ -89,4 +92,15 @@ td {
     border-color: #000;
     border-width: 3px;
     padding: 20px;
+}
+
+form {
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+}
+textarea{
+    margin-right: auto;
+    margin-left: auto;
+
 }

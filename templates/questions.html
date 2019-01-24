@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <title>Question {{q_id}}</title>
 </head>
 <body>
-<p><a href="/question/{{ q_id }}/new-answer">New Answer</a></p>
-    <h2>
+<a href="/list">Back</a>
+<br>
+<a href="/question/{{ q_id }}/new-answer">New Answer</a>
+    <h1>
     {%  for line in question %}
         {%  if q_id == line["id"]  %}
             {{ line["title"] }}
-    </h2>
+    </h1>
     <h3>Question ID:</h3>
     <p>{{line["id"]}}</p>
     <h3>Date:</h3>
@@ -19,26 +22,28 @@
     <h3>Vote point:</h3>
     <p>{{line["vote_number"]}} <button onclick="location.href ='/vote_up/{{ line['id'] }}'" type="button">/\</button> <button onclick="location.href ='/vote_down/{{ line['id'] }}'" type="button">\/</button></p>
     <h3>Details:</h3>
-    <p style="width:25%">{{line["message"]}}</p>
+    <p>{{line["message"]}}</p>
     <button onclick="location.href='/question/{{ q_id }}/edit'" type="button">edit</button>
     <button onclick="location.href='/question/{{ q_id }}/delete'" type="button">delete</button>
         {%  endif  %}
         {%  endfor  %}
 
 
-    <h2>Answers:</h2>
+    <h1>Answers:</h1>
 
 
-     <p>  {%  for line in answer  %}
+       {%  for line in answer  %}
           {%  if q_id == line["question_id"]  %}
-    ___________________________________________________
+    <p>___________________________________________________</p>
     <p>{{line["message"]}}</p>
     <p>{{line["vote_number"]}}</p>
     <p>{{line["submission_time"]}}</p>
     <br>
-
           {%  endif %}
           {%  endfor  %}
+           {% if q_id not in answer %}
+    <p>There is no answer yet. Be the first!</p>
+            {% endif %}
 
 
 

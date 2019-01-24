@@ -36,7 +36,7 @@ def new_question(new_data):
 
 
 def get_date_time():
-    return str(datetime.now())
+    return str(time.time())
 
 
 def add_question(title, details):
@@ -80,12 +80,14 @@ def edit_question(question_id, newdata):
             question["message"] = newdata + str("\n"+"{{Edited}}")
     connection.update_data("sample_data/question.csv",questions,question_fieldnames)
 
+
 def delete_q(question_id):
     questions = get_all_questions()
     for question in questions:
         if question['id'] == question_id:
             questions.remove(question)
     connection.update_data('sample_data/question.csv', questions, question_fieldnames)
+
 
 def delete_a(question_id):
     answers = get_all_answers()

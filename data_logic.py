@@ -5,8 +5,8 @@ question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 't
 answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
 
-def new_id():
-    return int(get_all_questions()[-1]['id']) + 1
+def new_id(response):
+    return int(response[-1]['id']) + 1
 
 
 def get_all_questions():
@@ -19,7 +19,7 @@ def get_all_answers():
 
 def add_new_answer(answer, question_id):
     new_dict = {
-        'id': new_id(),
+        'id': new_id(get_all_answers()),
         'submission_time': get_date_time(),
         'vote_number': 0,
         'question_id': question_id,
@@ -46,7 +46,7 @@ def get_date_time():
 def add_question(title, details):
     all_questions = get_all_questions()
     question_to_add = {
-        question_fieldnames[0]: new_id(),
+        question_fieldnames[0]: new_id(get_all_questions()),
         question_fieldnames[1]: get_date_time(),
         question_fieldnames[2]: 0,
         question_fieldnames[3]: 0,

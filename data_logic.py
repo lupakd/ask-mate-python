@@ -40,7 +40,7 @@ def new_question(new_data):
 
 
 def get_date_time():
-    return str(time.time())
+    return str(int(time.time()))
 
 
 def add_question(title, details):
@@ -85,7 +85,7 @@ def edit_question(question_id, newdata):
     connection.update_data("sample_data/question.csv",questions,question_fieldnames)
 
 
-def delete_q(question_id):
+def delete_question(question_id):
     questions = get_all_questions()
     for question in questions:
         if question['id'] == question_id:
@@ -93,10 +93,18 @@ def delete_q(question_id):
     connection.update_data('sample_data/question.csv', questions, question_fieldnames)
 
 
-def delete_a(question_id):
+def delete_question_answers(question_id):
     answers = get_all_answers()
     new_answers = answers.copy()
     for answer in answers:
         if answer['question_id'] == question_id:
+            new_answers.remove(answer)
+    connection.update_data('sample_data/answer.csv', new_answers, answer_fieldnames)
+
+def delete_answer(answer_id):
+    answers = get_all_answers()
+    new_answers = answers.copy()
+    for answer in answers:
+        if answer['id'] == answer_id:
             new_answers.remove(answer)
     connection.update_data('sample_data/answer.csv', new_answers, answer_fieldnames)

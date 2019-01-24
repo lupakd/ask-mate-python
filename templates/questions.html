@@ -38,6 +38,7 @@
     <p>{{line["message"]}}</p>
     <p>{{line["vote_number"]}}</p>
     <p>{{line["submission_time"]}}</p>
+    <button onclick="location.href='/answer/{{ q_id }}/{{ line['id'] }}/delete'" type="button">delete answer</button>
     <br>
           {%  endif %}
           {%  endfor  %}
@@ -45,21 +46,5 @@
     <p>There is no answer yet. Be the first!</p>
             {% endif %}
 
-
-
-
-
-
-
-
-
 </body>
-
-
-
-
-
-
-
-
 </html>

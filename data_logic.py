@@ -26,7 +26,7 @@ def add_new_answer(answer, question_id):
         'message': answer,
         'image': 0
     }
-    connection.append_to_data('sample_data/answer.csv', new_dict)
+    connection.append_to_data('sample_data/answer.csv', new_dict, answer_fieldnames)
 
 
 def display_question():

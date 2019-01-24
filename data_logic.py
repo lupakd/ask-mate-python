@@ -101,6 +101,7 @@ def delete_question_answers(question_id):
             new_answers.remove(answer)
     connection.update_data('sample_data/answer.csv', new_answers, answer_fieldnames)
 
+
 def delete_answer(answer_id):
     answers = get_all_answers()
     new_answers = answers.copy()

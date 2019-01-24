@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit question details</title>
+</head>
+<h2>Edit Question details</h2>
+<body>
+    <form action="/question/{{ question_id }}/edit" method="post">
+        {% for question in questions %}
+            {% if question['id'] == question_id %}
+        <h2>ID</h2>
+        <p>{{ question_id }}</p>
+        <h2>Question:</h2>
+        <p>{{ question['title'] }}</p>
+        <h2>Details:</h2>
+        <p><textarea id="new_details" rows="8" cols="50" name="new_details">{{ question['message'] }}</textarea></p>
+        <button type="submit">change details</button>
+            {% endif %}
+        {% endfor %}
+    </form>
+</body>
+</html>

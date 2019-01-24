@@ -5,14 +5,6 @@ question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 't
 answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
 
-def new_id():
-    return 24
-
-
-def get_time_now():
-    return 23423432
-
-
 def get_all_questions():
     return connection.read_data('sample_data/question.csv')
 
@@ -24,7 +16,7 @@ def get_all_answers():
 def add_new_answer(answer, question_id):
     new_dict = {
         'id': new_id(),
-        'submission_time': get_time_now(),
+        'submission_time': get_date_time(),
         'vote_number': 0,
         'question_id': question_id,
         'message': answer,
@@ -50,7 +42,7 @@ def get_date_time():
 def add_question(title, details):
     all_questions = get_all_questions()
     question_to_add = {
-        question_fieldnames[0]: int(all_questions[-1]['id']) + 1,
+        question_fieldnames[0]: new_id(),
         question_fieldnames[1]: get_date_time(),
         question_fieldnames[2]: 0,
         question_fieldnames[3]: 0,
@@ -87,3 +79,18 @@ def edit_question(question_id, newdata):
         if question["id"] == question_id:
             question["message"] = newdata + str("\n"+"{{Edited}}")
     connection.update_data("sample_data/question.csv",questions,question_fieldnames)
+
+def delete_q(question_id):
+    questions = get_all_questions()
+    for question in questions:
+        if question['id'] == question_id:
+            questions.remove(question)
+    connection.update_data('sample_data/question.csv', questions, question_fieldnames)
+
+def delete_a(question_id):
+    answers = get_all_answers()
+    new_answers = []
+    for answer in answers:
+        if answer['question_id'] != question_id:
+            new_answers.append(answer)
+    connection.update_data('sample_data/answer.csv', new_answers, answer_fieldnames)

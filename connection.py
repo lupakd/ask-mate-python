@@ -13,6 +13,7 @@ def append_to_data(filename, data, fieldnames):
         writer = csv.DictWriter(File, fieldnames=fieldnames)
         writer.writerow(data)
 
+
 def update_data(filename, data, fieldnames):
     with open(filename, 'wt') as File:
         writer = csv.DictWriter(File, fieldnames=fieldnames)

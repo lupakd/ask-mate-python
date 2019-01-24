@@ -19,9 +19,9 @@
     <h3>Vote point:</h3>
     <p>{{line["vote_number"]}} <button onclick="location.href ='/vote_up/{{ line['id'] }}'" type="button">/\</button> <button onclick="location.href ='/vote_down/{{ line['id'] }}'" type="button">\/</button></p>
     <h3>Details:</h3>
-    <p>{{line["message"]}}</p>
-    <p><a href="/question/{{ q_id }}/edit">Edit Question</a></p>
-
+    <p style="width:25%">{{line["message"]}}</p>
+    <button onclick="location.href='/question/{{ q_id }}/edit'" type="button">edit</button>
+    <button onclick="location.href='/question/{{ q_id }}/delete'" type="button">delete</button>
         {%  endif  %}
         {%  endfor  %}
 

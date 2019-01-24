@@ -49,6 +49,14 @@ def vote_down(question_id):
     return redirect('/questions/' + question_id)
 
 
+@app.route('/question/<question_id>/delete', methods=['GET', 'POST'])
+def delete_question(question_id):
+    data_logic.delete_q(question_id)
+    data_logic.delete_a(question_id)
+    return redirect('/')
+
+
+
 @app.route('/question/<question_id>/edit', methods=['GET','POST'])
 def edit(question_id):
     questions = data_logic.get_all_questions()

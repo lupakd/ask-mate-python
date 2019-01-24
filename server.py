@@ -64,7 +64,6 @@ def edit(question_id):
         return render_template("edit.html", q_id= question_id, questions=questions)
     else:
         data_logic.edit_question(question_id, request.form.get("edit_q"))
-
         return redirect("/questions/"+str(question_id))
 
 

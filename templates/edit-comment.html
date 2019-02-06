@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit comment</title>
+</head>
+<body>
+<h3>Edit comment</h3>
+<form action="{{ url_for('edit_comment', comment_id=comment[0]['id']) }}" method="post">
+    <textarea name="message" cols="30" rows="10">{{ comment[0]['message'] }}</textarea>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

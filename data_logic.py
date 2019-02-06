@@ -159,6 +159,17 @@ def get_all_comments(cursor):
 
 
 @connection.connection_handler
+def get_one_comment(cursor, comment_id):
+    cursor.execute('''
+                    SELECT * FROM comment
+                    WHERE id = %(comment_id)s;    
+                ''', {'comment_id': comment_id}
+                   )
+    comment = cursor.fetchall()
+    return comment
+
+
+@connection.connection_handler
 def add_comment(cursor,  message, question_id, answer_id=None):
     new_comment = {
                     'question_id': question_id,
@@ -186,3 +197,14 @@ def get_question_id(cursor, answer_id=None, comment_id=None):
                     ''', {'comment_id': comment_id})
     raw_id = cursor.fetchone()
     return raw_id['question_id']
+
+
+@connection.connection_handler
+def edit_comment(cursor, comment_id, message):
+    cursor.execute('''
+                    UPDATE comment
+                    SET edited_count = edited_count + 1, message = %(message)s
+                    WHERE id = %(comment_id)s;
+    ''', {'comment_id': comment_id,
+          'message': message}
+                   )

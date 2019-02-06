@@ -8,16 +8,26 @@ answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'mes
 def new_id(response):
     return int(response[-1]['id']) + 1
 
+@connection.connection_handler
+def get_all_questions(cursor):
+    cursor.execute('''
+                    SELECT * FROM question;
+    ''')
+    questions = cursor.fetchall()
+    return questions
 
-def get_all_questions():
-    return connection.read_data('sample_data/question.csv')
+
+@connection.connection_handler
+def get_all_answers(cursor):
+    cursor.execute('''
+                        SELECT * FROM answer;
+        ''')
+    answers = cursor.fetchall()
+    return answers
 
 
-def get_all_answers():
-    return connection.read_data('sample_data/answer.csv')
-
-
-def add_new_answer(answer, question_id):
+@connection.connection_handler
+def add_new_answer(cursor, answer, question_id):
     new_dict = {
         'id': new_id(get_all_answers()),
         'submission_time': get_date_time(),
@@ -26,27 +36,19 @@ def add_new_answer(answer, question_id):
         'message': answer,
         'image': 0
     }
-    connection.append_to_data('sample_data/answer.csv', new_dict, answer_fieldnames)
-
-
-def display_question():
-    answer = get_all_answers()
-    question = get_all_questions()
-    return answer, question
-
-
-def new_question(new_data):
-    connection.append_to_data('sample_data/question.csv', new_data, question_fieldnames)
+    cursor.execute('''
+                    INSERT INTO answer (submission_time, vote_number, question_id, message, image)
+                    VALUES (%(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s)
+    ''', new_dict)
 
 
 def get_date_time():
     return str(int(time.time()))
 
 
-def add_question(title, details):
-    all_questions = get_all_questions()
+@connection.connection_handler
+def add_question(cursor, title, details):
     question_to_add = {
-        question_fieldnames[0]: new_id(get_all_questions()),
         question_fieldnames[1]: get_date_time(),
         question_fieldnames[2]: 0,
         question_fieldnames[3]: 0,
@@ -54,15 +56,21 @@ def add_question(title, details):
         question_fieldnames[5]: details,
         question_fieldnames[6]: 'image'
     }
-    return question_to_add
+    cursor.execute('''
+                    INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
+                    VALUES (%(submission_time)s, %(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s)
+    ''', question_to_add)
+    question = cursor.fetchall()
+    return question
 
 
-def add_view(question_id):
-    questions = get_all_questions()
-    for question in questions:
-        if question['id'] == question_id:
-            question['view_number'] = int(question['view_number']) + 1
-    connection.update_data('sample_data/question.csv', questions, question_fieldnames)
+@connection.connection_handler
+def add_view(cursor, question_id):
+    cursor.execute('''
+                    UPDATE question
+                    SET view_number = view_number + 1
+                    WHERE id = %(question_id)s;
+    ''', {'question_id': question_id})
 
 
 def vote_counter(question_id, direction):

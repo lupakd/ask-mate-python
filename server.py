@@ -14,8 +14,9 @@ def route_list():
 @app.route('/questions/<question_id>')
 def display(question_id):
     data_logic.add_view(question_id)
-    answer, question = data_logic.display_question()
-    return render_template("questions.html", q_id=question_id, answer=answer, question=question)
+    answer = data_logic.get_all_answers()
+    question = data_logic.get_all_questions()
+    return render_template("questions.html", q_id=int(question_id), answer=answer, question=question)
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])

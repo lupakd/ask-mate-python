@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta charset="UTF-8">
-    <title>Edit question details</title>
+    <title>Edit Answer</title>
 </head>
-<h2>Edit Question details</h2>
+<h2>Edit Answer</h2>
 <body>
     <form action="/answer/{{ question_id }}/{{ a_id }}/edit" method="post">
     {% for answer in answers %}

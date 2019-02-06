@@ -5,6 +5,12 @@
     <title>Confirm</title>
 </head>
 <body>
-<button > Sure, I want to do this!</button>
+<h1>You want to delete this comment?</h1>
+<p3>
+    <form action="{{ url_for('delete_comment', comment_id=comment_id) }}" method="POST">
+    <button type="submit">Yes</button>
+    </form>
+    <a href="{{ url_for('display', question_id=question_id) }}"><button>No</button></a>
+</p3>
 </body>
 </html>

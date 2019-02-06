@@ -143,3 +143,44 @@ def delete_all_comments(cursor, answer_id=None, question_id=None):
                         WHERE question_id = %(question_id)s;
                         ''', {'question_id': question_id}
                        )
+
+
+@connection.connection_handler
+def get_all_comments(cursor):
+    cursor.execute('''
+                    SELECT * FROM comment;
+    ''')
+    comments = cursor.fetchall()
+    return comments
+
+
+@connection.connection_handler
+def add_comment(cursor,  message, question_id, answer_id=None):
+    new_comment = {
+                    'question_id': question_id,
+                    'answer_id': answer_id,
+                    'message': message,
+                    'submission_time': get_date_time()
+    }
+    cursor.execute('''
+                    INSERT INTO comment (question_id, answer_id, message, submission_time)
+                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s)        
+    ''', new_comment)
+
+
+@connection.connection_handler
+def get_question_id(cursor, answer_id=None, comment_id=None):
+    if answer_id is not None:
+        cursor.execute('''
+                        SELECT question_id FROM answer
+                        WHERE id = %(answer_id)s;
+                    ''', {'answer_id': answer_id}
+                       )
+    else:
+        cursor.execute('''
+                                SELECT question_id FROM comment
+                                WHERE id = %(comment_id)s;
+                    ''', {'comment_id': comment_id}
+                       )
+    raw_id = cursor.fetchone()
+    return raw_id['question_id']

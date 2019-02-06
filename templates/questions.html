@@ -2,6 +2,7 @@
 <html>
 <head>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <title>Question {{q_id}}</title>
 </head>
 <body>
@@ -28,7 +29,28 @@
         {%  endif  %}
         {%  endfor  %}
 
-    <button onclick="location.href='/comments/3/delete'" type="button">Delete comment nr 3</button>
+    <h3>Comments</h3>
+<table>
+    <tr>
+        <th>Comment ID</th>
+        <th>Comment</th>
+        <th>Submission time</th>
+    </tr>
+    {% for comment in comments %}
+    {% if comment.question_id == q_id %}
+        <tr>
+            <td>{{ comment.id }}</td>
+            <td>{{ comment.message }}</td>
+            <td>{{ comment.submission_time }}</td>
+            <td><a href="{{ url_for('delete_comment', comment_id=comment.id) }}">
+                <button class="btn"><i class="fa fa-trash"></i></button>
+                </a>
+            </td>
+        </tr>
+    {% endif %}
+    {% endfor %}
+</table>
+<a href="{{ url_for('add_comment_question', question_id=q_id) }}"><button>Add comment</button></a>
 
     <h1>Answers:</h1>
 
@@ -40,7 +62,30 @@
     <p>{{line["vote_number"]}}</p>
     <p>{{line["submission_time"]}}</p>
     <button onclick="location.href='/answer/{{ q_id }}/{{ line['id'] }}/delete'" type="button">delete answer</button>
+
+     <h3>Comments</h3>
+<table>
+    <tr>
+        <th>Comment ID</th>
+        <th>Comment</th>
+        <th>Submission time</th>
+    </tr>
+    {% for comment in comments %}
+    {% if comment.answer_id == line.id %}
+        <tr>
+            <td>{{ comment.id }}</td>
+            <td>{{ comment.message }}</td>
+            <td>{{ comment.submission_time }}</td>
+        <td><a href="{{ url_for('delete_comment', comment_id=comment.id) }}">
+            <button class="btn"><i class="fa fa-trash"></i></button>
+            </a>
+        </td>
+        </tr>
+    {% endif %}
+    {% endfor %}
+</table>
     <br>
+        <a href="{{ url_for('add_comment_answer', answer_id=line.id) }}"><button>Add comment</button></a>
           {%  endif %}
           {%  endfor  %}
            {% if q_id not in answer %}

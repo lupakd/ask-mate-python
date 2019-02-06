@@ -69,6 +69,7 @@ def delete_answer(answer_id, question_id):
     data_logic.delete_answer(answer_id)
     return redirect("/questions/"+str(question_id))
 
+
 @app.route('/answer/<question_id>/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id, question_id):
     answers = data_logic.get_all_answers()

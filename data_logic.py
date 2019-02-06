@@ -1,12 +1,12 @@
 import connection
-import time
+import datetime
 
 question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
 
 def get_date_time(): #nagozn kell
-    return str(int(time.time()))
+    return datetime.datetime.now()
 
 
 @connection.connection_handler
@@ -54,10 +54,13 @@ def add_question(cursor, title, details):
     }
     cursor.execute('''
                     INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
-                    VALUES (%(submission_time)s, %(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s)
+                    VALUES (%(submission_time)s, %(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s);
+                    SELECT id FROM question
+                    WHERE title = %(title)s;
     ''', question_to_add)
-    question = cursor.fetchall()
-    return question
+    question_id = cursor.fetchone()
+    return question_id
+
 
 
 @connection.connection_handler

@@ -69,6 +69,17 @@ def delete_answer(answer_id, question_id):
     data_logic.delete_answer(answer_id)
     return redirect("/questions/"+str(question_id))
 
+@app.route('/answer/<question_id>/<answer_id>/edit', methods=['GET', 'POST'])
+def edit_answer(answer_id, question_id):
+    answers = data_logic.get_all_answers()
+    questions = data_logic.get_all_questions()
+    if request.method == "GET":
+        return render_template("edit_answer.html", a_id=int(answer_id), question_id=int(question_id), answers=answers,
+                               questions=questions)
+    else:
+        data_logic.edit_answer(answer_id, request.form.get("edit_a"))
+        return redirect("/questions/"+str(question_id))
+
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit(question_id):

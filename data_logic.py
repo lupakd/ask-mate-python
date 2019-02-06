@@ -69,56 +69,62 @@ def add_view(cursor, question_id):
                     UPDATE question
                     SET view_number = view_number + 1
                     WHERE id = %(question_id)s;
-    ''', {'question_id': question_id})
-
+                    ''', {'question_id': question_id})
 
 @connection.connection_handler
-def vote_counter(cursor, question_id, direction):
-    if direction == 'up':
-        cursor.execute('''
+def vote_counter(cursor, question_id, direction, ):
+    if direction =='up':
+        cursor.execute("""
                         UPDATE question
-                        SET vote_number = vote_number + 1, view_number = view_number - 1
+                        SET vote_number = vote_number + 1, view_number = view_number - 1 
                         WHERE id = %(question_id)s;
-        ''', {'question_id': question_id})
+                        """, {'question_id': question_id})
     else:
-        cursor.execute('''
-                                UPDATE question
-                                SET vote_number = vote_number - 1, view_number = view_number - 1
-                                WHERE id = %(question_id)s;
-                ''', {'question_id': question_id})
+        cursor.execute("""
+                       UPDATE question
+                       SET vote_number = vote_number - 1, view_number = view_number - 1 
+                       WHERE id = %(question_id)s;
+                        """, {'question_id': question_id})
 
 
 @connection.connection_handler
 def edit_question(cursor, question_id, newdata):
-    cursor.execute('''
+    cursor.execute("""
                     UPDATE question
-                    SET message = %(message)s     
-                    WHERE id = %(question_id)s
-    ''', {'question_id': question_id, 'message': newdata})
+                    SET message = %(message)s
+                    WHERE id = %(id)s;
+                    """,{'message': newdata, 'id': question_id})
+
+
+@connection.connection_handler
+def edit_answer(cursor, answer_id, newdata):
+    cursor.execute("""
+                    UPDATE answer
+                    SET message = %(message)s
+                    WHERE id = %(answer_id)s;
+                    """, {'message': newdata, 'answer_id': answer_id})
 
 
 @connection.connection_handler
 def delete_question(cursor, question_id):
-    cursor.execute('''
+    cursor.execute("""
                     DELETE FROM question
-                    WHERE id = %(question_id)s;
-    ''', {'question_id': question_id})
-
+                    WHERE id = %(id)s
+                    """, {'id': question_id})
 
 @connection.connection_handler
 def delete_question_answers(cursor, question_id):
-    cursor.execute('''
+    cursor.execute("""
                     DELETE FROM answer
                     WHERE question_id = %(question_id)s;
-    ''', {'question_id': question_id})
-
+                    """, {'question_id': question_id})
 
 @connection.connection_handler
 def delete_answer(cursor, answer_id):
     cursor.execute('''
                     DELETE FROM answer
                     WHERE id = %(answer_id)s;
-    ''', {'answer_id': answer_id})
+                    ''', {'answer_id': answer_id})
 
 
 @connection.connection_handler
@@ -126,7 +132,7 @@ def delete_one_comment(cursor, comment_id):
     cursor.execute('''
                     DELETE FROM comment
                     WHERE  id = %(id)s;
-        ''', {'id': comment_id})
+                    ''', {'id': comment_id})
 
 
 @connection.connection_handler
@@ -135,21 +141,19 @@ def delete_all_comments(cursor, answer_id=None, question_id=None):
         cursor.execute('''
                         DELETE FROM comment
                         WHERE answer_id = %(answer_id)s;
-                        ''', {'answer_id': answer_id}
-                       )
+                        ''', {'answer_id': answer_id})
     else:
         cursor.execute('''
                         DELETE FROM comment
                         WHERE question_id = %(question_id)s;
-                        ''', {'question_id': question_id}
-                       )
+                        ''', {'question_id': question_id})
 
 
 @connection.connection_handler
 def get_all_comments(cursor):
     cursor.execute('''
                     SELECT * FROM comment;
-    ''')
+                    ''')
     comments = cursor.fetchall()
     return comments
 
@@ -165,7 +169,7 @@ def add_comment(cursor,  message, question_id, answer_id=None):
     cursor.execute('''
                     INSERT INTO comment (question_id, answer_id, message, submission_time)
                     VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s)        
-    ''', new_comment)
+                    ''', new_comment)
 
 
 @connection.connection_handler
@@ -174,13 +178,11 @@ def get_question_id(cursor, answer_id=None, comment_id=None):
         cursor.execute('''
                         SELECT question_id FROM answer
                         WHERE id = %(answer_id)s;
-                    ''', {'answer_id': answer_id}
-                       )
+                    ''', {'answer_id': answer_id})
     else:
         cursor.execute('''
                                 SELECT question_id FROM comment
                                 WHERE id = %(comment_id)s;
-                    ''', {'comment_id': comment_id}
-                       )
+                    ''', {'comment_id': comment_id})
     raw_id = cursor.fetchone()
     return raw_id['question_id']

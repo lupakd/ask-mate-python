@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <title>Edit question details</title>
+</head>
+<h2>Edit Question details</h2>
+<body>
+    <form action="/answer/{{ question_id }}/{{ a_id }}/edit" method="post">
+    {% for answer in answers %}
+        {% if question_id == answer['question_id'] and answer['id'] == a_id %}
+        <h2>ID:</h2>
+            <p>{{ a_id }}</p>
+            {%  for question in questions %}
+                {% if question['id'] == answer['question_id'] and answer['id'] == a_id %}
+                <h2>Question:</h2>
+                <p>{{ question['title'] }}</p>
+                {% endif %}
+            {% endfor %}
+        <textarea name="edit_a" rows="8" cols="50">{{ answer['message'] }}</textarea>
+        <button type="submit" value="edit">Edit answer</button>
+        {% endif %}
+    {% endfor %}
+    </form>
+</body>
+</html>

@@ -51,6 +51,7 @@ def vote_down(question_id):
 
 @app.route('/question/<question_id>/delete', methods=['GET', 'POST'])
 def delete_question(question_id, ):
+    data_logic.delete_all_comments(question_id=question_id) #todo not tested
     data_logic.delete_question(question_id)
     data_logic.delete_question_answers(question_id)
     return redirect('/')
@@ -58,6 +59,7 @@ def delete_question(question_id, ):
 
 @app.route('/answer/<question_id>/<answer_id>/delete', methods=['GET', 'POST'])
 def delete_answer(answer_id, question_id):
+    data_logic.delete_all_comments(answer_id=answer_id)   #todo not tested
     data_logic.delete_answer(answer_id)
     return redirect("/questions/"+str(question_id))
 
@@ -66,10 +68,15 @@ def delete_answer(answer_id, question_id):
 def edit(question_id):
     questions = data_logic.get_all_questions()
     if request.method == "GET":
-        return render_template("edit.html", q_id=question_id, questions=questions)
+        return render_template("edit.html", q_id=str(question_id), questions=questions)
     else:
         data_logic.edit_question(question_id, request.form.get("edit_q"))
         return redirect("/questions/"+str(question_id))
+
+
+@app.route('/comments/<comment_id>/delete')
+def delete_comment(comment_id):
+    data_logic.delete_one_comment(comment_id)
 
 
 if __name__ == "__main__":

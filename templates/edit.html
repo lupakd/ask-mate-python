@@ -13,13 +13,6 @@
 </head>
 <body>
 
-
-
-
-
-
-
-
 <form action="/question/{{ q_id }}/edit" method="POST">
         {%  for q in questions %}
             {% if q["id"] == q_id %}
@@ -29,14 +22,6 @@
 
         <input type="submit" value="Edit">
 </form>
-
-
-
-
-
-
-
-
 
 </body>
 </html>

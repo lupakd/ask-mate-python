@@ -119,3 +119,27 @@ def delete_answer(cursor, answer_id):
                     DELETE FROM answer
                     WHERE id = %(answer_id)s;
     ''', {'answer_id': answer_id})
+
+
+@connection.connection_handler
+def delete_one_comment(cursor, comment_id):
+    cursor.execute('''
+                    DELETE FROM comment
+                    WHERE  id = %(id)s;
+        ''', {'id': comment_id})
+
+
+@connection.connection_handler
+def delete_all_comments(cursor, answer_id=None, question_id=None):
+    if answer_id is not None:
+        cursor.execute('''
+                        DELETE FROM comment
+                        WHERE answer_id = %(answer_id)s;
+                        ''', {'answer_id': answer_id}
+                       )
+    else:
+        cursor.execute('''
+                        DELETE FROM comment
+                        WHERE question_id = %(question_id)s;
+                        ''', {'question_id': question_id}
+                       )

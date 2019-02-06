@@ -41,7 +41,7 @@ def route_add_question():
 @app.route('/vote_up/<question_id>')
 def vote_up(question_id):
     data_logic.vote_counter(question_id, 'up')
-    return redirect('/questions/'+question_id)
+    return redirect('/questions/' + question_id)
 
 
 @app.route('/vote_down/<question_id>')

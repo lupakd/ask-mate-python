@@ -5,8 +5,9 @@ question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 't
 answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
 
-def new_id(response):
-    return int(response[-1]['id']) + 1
+def get_date_time(): #nagozn kell
+    return str(int(time.time()))
+
 
 @connection.connection_handler
 def get_all_questions(cursor):
@@ -29,7 +30,6 @@ def get_all_answers(cursor):
 @connection.connection_handler
 def add_new_answer(cursor, answer, question_id):
     new_dict = {
-        'id': new_id(get_all_answers()),
         'submission_time': get_date_time(),
         'vote_number': 0,
         'question_id': question_id,
@@ -40,10 +40,6 @@ def add_new_answer(cursor, answer, question_id):
                     INSERT INTO answer (submission_time, vote_number, question_id, message, image)
                     VALUES (%(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s)
     ''', new_dict)
-
-
-def get_date_time():
-    return str(int(time.time()))
 
 
 @connection.connection_handler
@@ -73,47 +69,50 @@ def add_view(cursor, question_id):
     ''', {'question_id': question_id})
 
 
-def vote_counter(question_id, direction):
-    questions = get_all_questions()
-    for question in questions:
-        if question['id'] == question_id:
-            question['view_number'] = int(question['view_number']) - 1
-            if direction == 'up':
-                question['vote_number'] = int(question['vote_number']) + 1
-            else:
-                question['vote_number'] = int(question['vote_number']) - 1
-    connection.update_data('sample_data/question.csv', questions, question_fieldnames)
+@connection.connection_handler
+def vote_counter(cursor, question_id, direction):
+    if direction == 'up':
+        cursor.execute('''
+                        UPDATE question
+                        SET vote_number = vote_number + 1, view_number = view_number - 1
+                        WHERE id = %(question_id)s;
+        ''', {'question_id': question_id})
+    else:
+        cursor.execute('''
+                                UPDATE question
+                                SET vote_number = vote_number - 1, view_number = view_number - 1
+                                WHERE id = %(question_id)s;
+                ''', {'question_id': question_id})
 
 
-def edit_question(question_id, newdata):
-    questions = get_all_questions()
-    for question in questions:
-        if question["id"] == question_id:
-            question["message"] = newdata + str("\n"+"{{Edited}}")
-    connection.update_data("sample_data/question.csv",questions,question_fieldnames)
+@connection.connection_handler
+def edit_question(cursor, question_id, newdata):
+    cursor.execute('''
+                    UPDATE question
+                    SET message = %(message)s     
+                    WHERE id = %(question_id)s
+    ''', {'question_id': question_id, 'message': newdata})
 
 
-def delete_question(question_id):
-    questions = get_all_questions()
-    for question in questions:
-        if question['id'] == question_id:
-            questions.remove(question)
-    connection.update_data('sample_data/question.csv', questions, question_fieldnames)
+@connection.connection_handler
+def delete_question(cursor, question_id):
+    cursor.execute('''
+                    DELETE FROM question
+                    WHERE id = %(question_id)s;
+    ''', {'question_id': question_id})
 
 
-def delete_question_answers(question_id):
-    answers = get_all_answers()
-    new_answers = answers.copy()
-    for answer in answers:
-        if answer['question_id'] == question_id:
-            new_answers.remove(answer)
-    connection.update_data('sample_data/answer.csv', new_answers, answer_fieldnames)
+@connection.connection_handler
+def delete_question_answers(cursor, question_id):
+    cursor.execute('''
+                    DELETE FROM answer
+                    WHERE question_id = %(question_id)s;
+    ''', {'question_id': question_id})
 
 
-def delete_answer(answer_id):
-    answers = get_all_answers()
-    new_answers = answers.copy()
-    for answer in answers:
-        if answer['id'] == answer_id:
-            new_answers.remove(answer)
-    connection.update_data('sample_data/answer.csv', new_answers, answer_fieldnames)
+@connection.connection_handler
+def delete_answer(cursor, answer_id):
+    cursor.execute('''
+                    DELETE FROM answer
+                    WHERE id = %(answer_id)s;
+    ''', {'answer_id': answer_id})

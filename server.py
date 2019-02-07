@@ -88,9 +88,9 @@ def edit_answer(answer_id, question_id):
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit(question_id):
-    questions = data_logic.get_all_questions()
+    question = data_logic.get_single_question(question_id=question_id)
     if request.method == "GET":
-        return render_template("edit.html", q_id=int(question_id), questions=questions)
+        return render_template("edit.html", question=question)
     else:
         data_logic.edit_question(question_id, request.form.get("edit_q"))
         return redirect("/questions/"+str(question_id))

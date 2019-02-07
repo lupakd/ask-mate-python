@@ -7,7 +7,7 @@
 <body>
 <h1>You want to delete this comment?</h1>
 <p3>
-    <form action="{{ url_for('delete_comment', comment_id=comment_id) }}" method="POST">
+    <form action="{{ url_for('delete_comment', comment_id=comment_id) }}" method="post">
     <button type="submit">Yes</button>
     </form>
     <a href="{{ url_for('display_question', question_id=question_id) }}"><button>No</button></a>

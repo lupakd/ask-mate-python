@@ -25,7 +25,7 @@
     <h3>Details:</h3>
     <p>{{line["message"]}}</p>
     <button onclick="location.href='/question/{{ q_id }}/edit'" type="button">edit</button>
-    <button onclick="location.href='/question/{{ q_id }}/delete'" type="button">delete</button>
+    <button onclick="location.href='/question/{{ q_id }}/delete'" type="button"><i class="fa fa-trash"></i></button>
         {%  endif  %}
         {%  endfor  %}
 
@@ -62,7 +62,7 @@
     <p>{{line["message"]}}</p>
     <p>{{line["vote_number"]}}</p>
     <p>{{line["submission_time"]}}</p>
-    <button onclick="location.href='/answer/{{ q_id }}/{{ line['id'] }}/delete'" type="button">delete answer</button>
+    <button onclick="location.href='/answer/{{ q_id }}/{{ line['id'] }}/delete'" type="button"><i class="fa fa-trash"></i></button>
     <button onclick="location.href='/answer/{{ q_id }}/{{ line['id'] }}/edit'" type="button">edit answer</button>
 
      <h3>Comments</h3>

@@ -6,13 +6,18 @@ app = Flask(__name__)
 
 
 @app.route('/')
+def route_main():
+    latest = data_logic.get_latest_questions()
+    return render_template('list.html', dict=latest)
+
+
 @app.route('/list')
 def route_list():
     return render_template('list.html', dict=data_logic.get_all_questions())
 
 
 @app.route('/questions/<question_id>')
-def display(question_id):
+def display_question(question_id):
     data_logic.add_view(question_id)
     answer = data_logic.get_all_answers()
     question = data_logic.get_all_questions()
@@ -72,11 +77,10 @@ def delete_answer(answer_id, question_id):
 
 @app.route('/answer/<question_id>/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id, question_id):
-    answers = data_logic.get_all_answers()
-    questions = data_logic.get_all_questions()
+    question = data_logic.get_single_question(question_id)
+    answer = data_logic.get_single_answer(answer_id)
     if request.method == "GET":
-        return render_template("edit_answer.html", a_id=int(answer_id), question_id=int(question_id), answers=answers,
-                               questions=questions)
+        return render_template("edit_answer.html", answer=answer, question=question)
     else:
         data_logic.edit_answer(answer_id, request.form.get("edit_a"))
         return redirect("/questions/"+str(question_id))
@@ -97,7 +101,7 @@ def add_comment_question(question_id):
     if request.method == 'POST':
         message = request.form.get('message')
         data_logic.add_comment(message, question_id=question_id)
-        return redirect(url_for('display', question_id=question_id))
+        return redirect(url_for('display_question', question_id=question_id))
     else:
         specific_url = url_for('add_comment_question', question_id=question_id)
         return render_template('new-comment.html', question_id=question_id, specific_url=specific_url)
@@ -109,7 +113,7 @@ def add_comment_answer(answer_id):
         message = request.form.get('message')
         question_id = data_logic.get_question_id(answer_id)
         data_logic.add_comment(message, question_id=question_id, answer_id=answer_id)
-        return redirect(url_for('display', question_id=question_id))
+        return redirect(url_for('display_question', question_id=question_id))
     else:
         specific_url = url_for('add_comment_answer', answer_id=answer_id)
         return render_template('new-comment.html', answer_id=answer_id, specific_url=specific_url)
@@ -122,7 +126,7 @@ def delete_comment(comment_id):
         return render_template('confirm.html', comment_id=comment_id, question_id=question_id)
     else:
         data_logic.delete_one_comment(comment_id)
-        return redirect(url_for('display', question_id=question_id))
+        return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route('/comments/<comment_id>/edit', methods=['GET', 'POST'])
@@ -134,7 +138,23 @@ def edit_comment(comment_id):
         message = request.form.get('message')
         data_logic.edit_comment(comment_id=comment_id, message=message)
         question_id = data_logic.get_question_id(comment_id=comment_id)
-        return redirect(url_for('display', question_id=question_id))
+        return redirect(url_for('display_question', question_id=question_id))
+
+
+@app.route('/latest-questions')
+def latest_questions():
+    latest = data_logic.get_latest_questions()
+    return render_template('list.html', dict=latest)
+
+
+@app.route('/search')
+def search_question():
+    quote = request.args.get('q')
+    question_ids = data_logic.convert_search_result(data_logic.search_questions(quote))
+    answer_ids = data_logic.convert_search_result(data_logic.search_answers(quote))
+    ids = question_ids | answer_ids
+    questions = data_logic.question_search_result(list(ids))
+    return render_template('list.html', dict=questions)
 
 
 if __name__ == "__main__":

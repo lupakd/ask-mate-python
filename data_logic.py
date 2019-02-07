@@ -112,12 +112,14 @@ def delete_question(cursor, question_id):
                     WHERE id = %(id)s
                     """, {'id': question_id})
 
+
 @connection.connection_handler
 def delete_question_answers(cursor, question_id):
     cursor.execute("""
                     DELETE FROM answer
                     WHERE question_id = %(question_id)s;
                     """, {'question_id': question_id})
+
 
 @connection.connection_handler
 def delete_answer(cursor, answer_id):
@@ -209,3 +211,23 @@ def edit_comment(cursor, comment_id, message):
     ''', {'comment_id': comment_id,
           'message': message}
                    )
+
+
+@connection.connection_handler
+def get_single_question(cursor, question_id):
+    cursor.execute("""
+                    SELECT * FROM question
+                    WHERE id = %(question_id)s;
+    """, {'question_id': question_id})
+    question = cursor.fetchone()
+    return question
+
+
+@connection.connection_handler
+def get_single_answer(cursor, answer_id):
+    cursor.execute("""
+                    SELECT * FROM answer
+                    WHERE id = %(answer_id)s;
+    """, {'answer_id': answer_id})
+    question = cursor.fetchone()
+    return question

@@ -80,7 +80,7 @@ def edit_answer(answer_id, question_id):
     question = data_logic.get_single_question(question_id)
     answer = data_logic.get_single_answer(answer_id)
     if request.method == "GET":
-        return render_template("edit_answer.html", answer=answer, question=question)
+        return render_template("edit-answer.html", answer=answer, question=question)
     else:
         data_logic.edit_answer(answer_id, request.form.get("edit_a"))
         return redirect("/questions/"+str(question_id))

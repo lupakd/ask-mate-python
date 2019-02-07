@@ -168,7 +168,7 @@ def get_one_comment(cursor, comment_id):
                     WHERE id = %(comment_id)s;    
                 ''', {'comment_id': comment_id}
                    )
-    comment = cursor.fetchall()
+    comment = cursor.fetchone()
     return comment
 
 

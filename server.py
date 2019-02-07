@@ -17,7 +17,7 @@ def route_list():
 
 
 @app.route('/questions/<question_id>')
-def display(question_id):
+def display_question(question_id):
     data_logic.add_view(question_id)
     answer = data_logic.get_all_answers()
     question = data_logic.get_all_questions()
@@ -101,7 +101,7 @@ def add_comment_question(question_id):
     if request.method == 'POST':
         message = request.form.get('message')
         data_logic.add_comment(message, question_id=question_id)
-        return redirect(url_for('display', question_id=question_id))
+        return redirect(url_for('display_question', question_id=question_id))
     else:
         specific_url = url_for('add_comment_question', question_id=question_id)
         return render_template('new-comment.html', question_id=question_id, specific_url=specific_url)
@@ -113,7 +113,7 @@ def add_comment_answer(answer_id):
         message = request.form.get('message')
         question_id = data_logic.get_question_id(answer_id)
         data_logic.add_comment(message, question_id=question_id, answer_id=answer_id)
-        return redirect(url_for('display', question_id=question_id))
+        return redirect(url_for('display_question', question_id=question_id))
     else:
         specific_url = url_for('add_comment_answer', answer_id=answer_id)
         return render_template('new-comment.html', answer_id=answer_id, specific_url=specific_url)
@@ -126,7 +126,7 @@ def delete_comment(comment_id):
         return render_template('confirm.html', comment_id=comment_id, question_id=question_id)
     else:
         data_logic.delete_one_comment(comment_id)
-        return redirect(url_for('display', question_id=question_id))
+        return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route('/comments/<comment_id>/edit', methods=['GET', 'POST'])
@@ -138,7 +138,7 @@ def edit_comment(comment_id):
         message = request.form.get('message')
         data_logic.edit_comment(comment_id=comment_id, message=message)
         question_id = data_logic.get_question_id(comment_id=comment_id)
-        return redirect(url_for('display', question_id=question_id))
+        return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route('/latest-questions')

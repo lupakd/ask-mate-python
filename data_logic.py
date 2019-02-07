@@ -112,12 +112,14 @@ def delete_question(cursor, question_id):
                     WHERE id = %(id)s
                     """, {'id': question_id})
 
+
 @connection.connection_handler
 def delete_question_answers(cursor, question_id):
     cursor.execute("""
                     DELETE FROM answer
                     WHERE question_id = %(question_id)s;
                     """, {'question_id': question_id})
+
 
 @connection.connection_handler
 def delete_answer(cursor, answer_id):
@@ -212,40 +214,20 @@ def edit_comment(cursor, comment_id, message):
 
 
 @connection.connection_handler
-def search_questions(cursor, quote):
-    cursor.execute('''
-                    SELECT id FROM question
-                    WHERE message LIKE %(quote)s OR title LIKE %(quote)s;
-    ''', {'quote': '%' + quote + '%'})
-    question_ids = cursor.fetchall()
-    return question_ids
-
-
-@connection.connection_handler
-def search_answers(cursor, quote):
-    cursor.execute('''
-                    SELECT question_id FROM answer
-                    WHERE message LIKE %(quote)s;
-    ''', {'quote': '%' + quote + '%'})
-    answer_ids = cursor.fetchall()
-    for line in answer_ids:
-        line['id'] = line.pop('question_id')
-    return answer_ids
-
-
-def convert_search_result(ids):
-    processed_ids = []
-    for line in ids:
-        processed_ids.append(line['id'])
-    return set(processed_ids)
-
-
-@connection.connection_handler
-def question_search_result(cursor, ids):
-    ids = tuple(ids)
-    cursor.execute('''
+def get_single_question(cursor, question_id):
+    cursor.execute("""
                     SELECT * FROM question
-                    WHERE id IN %(id_list)s; 
-    ''', {'id_list': tuple(ids)})
-    questions = cursor.fetchall()
-    return questions
+                    WHERE id = %(question_id)s;
+    """, {'question_id': question_id})
+    question = cursor.fetchone()
+    return question
+
+
+@connection.connection_handler
+def get_single_answer(cursor, answer_id):
+    cursor.execute("""
+                    SELECT * FROM answer
+                    WHERE id = %(answer_id)s;
+    """, {'answer_id': answer_id})
+    question = cursor.fetchone()
+    return question

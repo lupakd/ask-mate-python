@@ -7,21 +7,13 @@
 </head>
 <h2>Edit Answer</h2>
 <body>
-    <form action="/answer/{{ question_id }}/{{ a_id }}/edit" method="post">
-    {% for answer in answers %}
-        {% if question_id == answer.question_id and answer.id == a_id %}
+    <form action="/answer/{{ question.id }}/{{ answer.id }}/edit" method="post">
         <h2>ID:</h2>
-            <p>{{ a_id }}</p>
-            {%  for question in questions %}
-                {% if question.id == answer.question_id and answer.id == a_id %}
-                <h2>Question:</h2>
-                <p>{{ question.title }}</p>
-                {% endif %}
-            {% endfor %}
+        <p>{{ answer.id }}</p>
+        <h2>Question:</h2>
+        <p>{{ question.title }}</p>
         <textarea name="edit_a" rows="8" cols="50">{{ answer.message }}</textarea>
         <button type="submit" value="edit">Edit answer</button>
-        {% endif %}
-    {% endfor %}
     </form>
 </body>
 </html>

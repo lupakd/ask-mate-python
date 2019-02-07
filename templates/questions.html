@@ -6,9 +6,9 @@
 <title>Question {{q_id}}</title>
 </head>
 <body>
-<a href="/list">Back</a>
+<a href="/list"><button class="button1" type="button">Back</button></a>
 <br>
-<a href="/question/{{ q_id }}/new-answer">New Answer</a>
+<a href="/question/{{ q_id }}/new-answer"><button class="button1" type="button">New Answer</button></a>
     <h1>
     {%  for line in question %}
         {%  if q_id == line["id"]  %}
@@ -24,13 +24,13 @@
     <p>{{line["vote_number"]}} <button onclick="location.href ='/vote_up/{{ line['id'] }}'" type="button">/\</button> <button onclick="location.href ='/vote_down/{{ line['id'] }}'" type="button">\/</button></p>
     <h3>Details:</h3>
     <p class="description">{{line["message"]}}</p>
-    <button onclick="location.href='/question/{{ q_id }}/edit'" type="button">edit</button>
-    <button onclick="location.href='/question/{{ q_id }}/delete'" type="button"><i class="fa fa-trash"></i></button>
+    <button class="button1" onclick="location.href='/question/{{ q_id }}/edit'" type="button">edit</button>
+    <button class="button1" onclick="location.href='/question/{{ q_id }}/delete'" type="button"><i class="fa fa-trash"></i></button>
         {%  endif  %}
         {%  endfor  %}
 
     <h3>Comments</h3>
-<table>
+<table class="center">
     <tr>
         <th>Comment ID</th>
         <th>Comment</th>
@@ -44,31 +44,31 @@
             <td>{{ comment.message }}</td>
             <td>{{ comment.submission_time }}</td>
             <td>{{ comment.edited_count }}</td>
-            <td><a href="{{ url_for('edit_comment', comment_id=comment.id) }}"><button>Edit</button></a></td>
+            <td><a href="{{ url_for('edit_comment', comment_id=comment.id) }}"><button class="button1">Edit</button></a></td>
             <td><a href="{{ url_for('delete_comment', comment_id=comment.id) }}">
-                <button class="btn"><i class="fa fa-trash"></i></button>
+                <button class="button1"><i class="fa fa-trash button1"></i></button>
                 </a>
             </td>
         </tr>
     {% endif %}
     {% endfor %}
 </table>
-<a href="{{ url_for('add_comment_question', question_id=q_id) }}"><button>Add comment</button></a>
+<a href="{{ url_for('add_comment_question', question_id=q_id) }}"><button class="button1">Add comment</button></a>
 
     <h1>Answers:</h1>
 
 
+    <div class="border>">
        {%  for line in answer  %}
           {%  if q_id == line["question_id"]  %}
-    <p>___________________________________________________</p>
     <p>{{line["message"]}}</p>
     <p>{{line["vote_number"]}}</p>
     <p>{{line["submission_time"]}}</p>
-    <button onclick="location.href='/answer/{{ q_id }}/{{ line['id'] }}/delete'" type="button"><i class="fa fa-trash"></i></button>
-    <button onclick="location.href='/answer/{{ q_id }}/{{ line['id'] }}/edit'" type="button">edit answer</button>
-
+    <button onclick="location.href='/answer/{{ q_id }}/{{ line['id'] }}/delete'" type="button"><i class="fa fa-trash button1"></i></button>
+    <button onclick="location.href='/answer/{{ q_id }}/{{ line['id'] }}/edit'" type="button" class="button1">edit answer</button>
+    </div>
      <h3>Comments</h3>
-<table>
+<table class="center">
     <tr>
         <th>Comment ID</th>
         <th>Comment</th>
@@ -82,9 +82,9 @@
             <td>{{ comment.message }}</td>
             <td>{{ comment.submission_time }}</td>
             <td>{{ comment.edited_count }}</td>
-            <td><a href="{{ url_for('edit_comment', comment_id=comment.id) }}"><button>Edit</button></a></td>
+            <td><a href="{{ url_for('edit_comment', comment_id=comment.id) }}"><button class="button1">Edit</button></a></td>
             <td><a href="{{ url_for('delete_comment', comment_id=comment.id) }}">
-            <button class="btn"><i class="fa fa-trash"></i></button>
+            <button class="button1"><i class="fa fa-trash button1"></i></button>
             </a>
         </td>
         </tr>
@@ -92,12 +92,10 @@
     {% endfor %}
 </table>
     <br>
-        <a href="{{ url_for('add_comment_answer', answer_id=line.id) }}"><button>Add comment</button></a>
+        <a href="{{ url_for('add_comment_answer', answer_id=line.id) }}"><button class="button1">Add comment</button></a>
           {%  endif %}
           {%  endfor  %}
-           {% if q_id not in answer %}
-    <p>There is no answer yet. Be the first!</p>
-            {% endif %}
+
 
 </body>
 </html>

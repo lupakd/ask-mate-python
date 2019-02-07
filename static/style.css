@@ -2,8 +2,8 @@
 body {
     font-family: arial, helvetica, sans-serif;
     font-size: 28px;
-    color: #000000;
-    background-color: rgba(37, 52, 50, 0.41);
+    color: #060105;
+    background-color: #6b6964;
     margin: 20px;
     padding: 0;
 }
@@ -18,13 +18,13 @@ p {
 
 h1 {
     color: #060105;
-    background-color: #995035;
-    font-size: 2em;
+    background-color: #b0aca5;
+    font-size: 32px;
     margin: 0;
     margin-bottom: 7px;
     padding: 4px;
     font-style: italic;
-    text-align: center;
+    text-align: left;
     letter-spacing: 0.5em;
     border-bottom-style: solid;
     border-bottom-width: 0.5em;
@@ -67,7 +67,7 @@ li {
 }
 
 table.center {
-    background-color: #fbf8e9;
+    background-color: rgba(249, 253, 255, 0.98);
     margin-left: auto;
     margin-right: auto;
     border-style: solid;
@@ -95,19 +95,22 @@ td {
 }
 
 form {
-    margin-right: auto;
-    margin-left: auto;
+    /*margin-right: auto;*/
+    /*margin-left: auto;  */
     text-align: center;
 }
 textarea{
     margin-right: auto;
     margin-left: auto;
+    resize: none;
 
 }
 
 .button1{
     border-radius : 6px;
-    padding: 8px 22px;
+    padding : 8px 16px;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 
@@ -116,4 +119,27 @@ textarea{
     width: 900px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.border{
+    border-style: solid;
+    text-align: center;
+    border-width: 3px;
+    border-color: #060105;
+
+}
+
+.searchbar{
+    margin-left: 900px;
+    margin-right: 100px;
+    text-align: right;
+    max-height: 5px;
+    min-height: 3px;
+}
+
+.p3{
+    margin-right: auto;
+    margin-left: auto;
+    width: 500px;
+
 }

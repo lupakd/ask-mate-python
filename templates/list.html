@@ -7,11 +7,13 @@
 </head>
 <body>
 	<h1>AskMate</h1>
+    <div class="searchbar"
     <form action="{{ url_for('search_question') }}", method="get">
-        <textarea name="q" id="" cols="30" rows="10">make</textarea>
-        <button type="submit">Search</button>
+        <textarea name="q" id="" cols="16" rows="1,5">make</textarea>
+        <button class="button1" type="submit">Search</button>
     </form>
-    <a href="{{ url_for('route_add_question') }}"><button type="button">Ask a question</button></a>
+    </div>
+    <a href="{{ url_for('route_add_question') }}"><button class="button1" type="button">Ask a question</button></a>
 	<table class ="center">
 		<thead>
 		<th>Id</th>

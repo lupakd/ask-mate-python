@@ -175,11 +175,12 @@ def add_comment(cursor,  message, question_id, answer_id=None):
                     'question_id': question_id,
                     'answer_id': answer_id,
                     'message': message,
-                    'submission_time': get_date_time()
+                    'submission_time': get_date_time(),
+                    'edited_count': 0
     }
     cursor.execute('''
-                    INSERT INTO comment (question_id, answer_id, message, submission_time)
-                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s)        
+                    INSERT INTO comment (question_id, answer_id, message, submission_time, edited_count)
+                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s, %(edited_count)s)        
                     ''', new_comment)
 
 

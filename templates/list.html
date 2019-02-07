@@ -7,6 +7,10 @@
 </head>
 <body>
 	<h1>AskMate</h1>
+    <form action="{{ url_for('search_question') }}", method="get">
+        <textarea name="q" id="" cols="30" rows="10">make</textarea>
+        <button type="submit">Search</button>
+    </form>
 	<button onclick="location.href ='/add_question'" type="button">Ask a question</button>
 	<table class ="center">
 		<thead>

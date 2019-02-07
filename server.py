@@ -137,5 +137,15 @@ def edit_comment(comment_id):
         return redirect(url_for('display', question_id=question_id))
 
 
+@app.route('/search')
+def search_question():
+    quote = request.args.get('q')
+    question_ids = data_logic.convert_search_result(data_logic.search_questions(quote))
+    answer_ids = data_logic.convert_search_result(data_logic.search_answers(quote))
+    ids = question_ids | answer_ids
+    questions = data_logic.question_search_result(list(ids))
+    return render_template('list.html', dict=questions)
+
+
 if __name__ == "__main__":
     app.run()

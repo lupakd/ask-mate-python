@@ -269,8 +269,8 @@ def get_single_answer(cursor, answer_id):
                     SELECT * FROM answer
                     WHERE id = %(a_id)s;
     """, {'a_id': answer_id})
-    question = cursor.fetchone()
-    return question
+    answer = cursor.fetchone()
+    return answer
 
 
 @connection.connection_handler

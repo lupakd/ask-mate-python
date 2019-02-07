@@ -8,35 +8,35 @@ app = Flask(__name__)
 @app.route('/')
 def route_main():
     latest = data_logic.get_latest_questions()
-    return render_template('list.html', dict=latest)
+    return render_template('list.html', questions=latest)
 
 
 @app.route('/list')
 def route_list():
-    return render_template('list.html', dict=data_logic.get_all_questions())
+    return render_template('list.html', questions=data_logic.get_all_questions())
 
 
 @app.route('/questions/<question_id>')
 def display_question(question_id):
     data_logic.add_view(question_id)
-    answer = data_logic.get_all_answers()
-    question = data_logic.get_all_questions()
+    answers = data_logic.get_all_answers()
+    question = data_logic.get_single_question(question_id)
     comments = data_logic.get_all_comments()
     return render_template("questions.html",
                            q_id=int(question_id),
-                           answer=answer,
+                           answers=answers,
                            question=question,
                            comments=comments,
-                           question_id=question_id)
+                           )
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
-def new_answer(question_id):
+def add_answer(question_id):
     if request.method == 'POST':
         new_answer = request.form.get('new_answer')
         data_logic.add_new_answer(new_answer, question_id)
         return redirect('/questions/' + question_id)
-    return render_template("post_answer.html", q_id=question_id)
+    return render_template("post-answer.html", q_id=question_id)
 
 
 @app.route('/add_question', methods=['GET','POST'])
@@ -154,7 +154,7 @@ def search_question():
     answer_ids = data_logic.convert_search_result(data_logic.search_answers(quote))
     ids = question_ids | answer_ids
     questions = data_logic.question_search_result(list(ids))
-    return render_template('list.html', dict=questions)
+    return render_template('list.html', questions=questions)
 
 
 if __name__ == "__main__":

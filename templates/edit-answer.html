@@ -7,7 +7,7 @@
 </head>
 <h2>Edit Answer</h2>
 <body>
-    <form action="/answer/{{ question.id }}/{{ answer.id }}/edit" method="post">
+    <form action="{{ url_for('edit_answer', question_id=question.id, answer_id=answer.id) }}" method="post">
         <h2>ID:</h2>
         <p>{{ answer.id }}</p>
         <h2>Question:</h2>

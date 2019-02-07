@@ -4,21 +4,12 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta charset="UTF-8">
     <title>Editing</title>
-<h1>{%  for row in questions %}
-        {% if row["id"] == q_id %}
-            {{ row["title"] }}
-        {% endif %}
-    {% endfor %}
-</h1>
+<h1>{{ question['title'] }}</h1>
 </head>
 <body>
-<form action="/question/{{ q_id }}/edit" method="POST">
-        {%  for q in questions %}
-            {% if q["id"] == q_id %}
-        <textarea name="edit_q" rows="16" cols="50" >{{ q["message"] }}</textarea>
-            {% endif %}
-        {% endfor %}
-        <input type="submit" value="Edit">
+<form action="{{ url_for('edit', question_id=question['id']) }}" method="post">
+    <textarea name="edit_q" rows="16" cols="50" >{{ question["message"] }}</textarea>
+    <button type="submit">Edit</button>
 </form>
 </body>
 </html>

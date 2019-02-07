@@ -6,6 +6,11 @@ app = Flask(__name__)
 
 
 @app.route('/')
+def route_main():
+    latest = data_logic.get_latest_questions()
+    return render_template('list.html', dict=latest)
+
+
 @app.route('/list')
 def route_list():
     return render_template('list.html', dict=data_logic.get_all_questions())
@@ -75,8 +80,7 @@ def edit_answer(answer_id, question_id):
     question = data_logic.get_single_question(question_id)
     answer = data_logic.get_single_answer(answer_id)
     if request.method == "GET":
-        return render_template("edit_answer.html", answer=answer,
-                               question=question)
+        return render_template("edit_answer.html", answer=answer, question=question)
     else:
         data_logic.edit_answer(answer_id, request.form.get("edit_a"))
         return redirect("/questions/"+str(question_id))
@@ -135,6 +139,12 @@ def edit_comment(comment_id):
         data_logic.edit_comment(comment_id=comment_id, message=message)
         question_id = data_logic.get_question_id(comment_id=comment_id)
         return redirect(url_for('display', question_id=question_id))
+
+
+@app.route('/latest-questions')
+def latest_questions():
+    latest = data_logic.get_latest_questions()
+    return render_template('list.html', dict=latest)
 
 
 @app.route('/search')

@@ -12,7 +12,8 @@ def get_date_time(): #nagozn kell
 @connection.connection_handler
 def get_all_questions(cursor):
     cursor.execute('''
-                    SELECT * FROM question;
+                    SELECT * FROM question
+                    ORDER BY id asc;
     ''')
     questions = cursor.fetchall()
     return questions
@@ -267,7 +268,17 @@ def get_single_question(cursor, question_id):
 def get_single_answer(cursor, answer_id):
     cursor.execute("""
                     SELECT * FROM answer
-                    WHERE id = %(answer_id)s;
-    """, {'answer_id': answer_id})
+                    WHERE id = %(a_id)s;
+    """, {'a_id': answer_id})
     question = cursor.fetchone()
     return question
+
+
+@connection.connection_handler
+def get_latest_questions(cursor):
+    cursor.execute("""
+                    SELECT * FROM question
+                    ORDER BY id desc LIMIT 5;
+    """)
+    questions = cursor.fetchall()
+    return questions

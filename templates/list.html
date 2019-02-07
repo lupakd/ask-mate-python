@@ -29,9 +29,10 @@
 			<td>{{i["vote_number"]}}</td>
 			<td><a href="/questions/{{  i["id"]  }}">{{  i["title"]  }}</td>
         </tr>
-		{% endfor %}]
+		{% endfor %}
+
 		</tbody>
 	</table>
-
+    <button align="right" type="button" onclick="location.href ='/list'">List all questions</button>
 </body>
 </html>

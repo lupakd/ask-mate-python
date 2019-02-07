@@ -3,7 +3,7 @@ body {
     font-family: arial, helvetica, sans-serif;
     font-size: 28px;
     color: #000000;
-    background-color: #b6fff6;
+    background-color: rgba(37, 52, 50, 0.41);
     margin: 20px;
     padding: 0;
 }
@@ -17,7 +17,7 @@ p {
 }
 
 h1 {
-    color: #dfffca;
+    color: #060105;
     background-color: #995035;
     font-size: 2em;
     margin: 0;
@@ -103,4 +103,17 @@ textarea{
     margin-right: auto;
     margin-left: auto;
 
+}
+
+.button1{
+    border-radius : 6px;
+    padding: 8px 22px;
+}
+
+
+.description{
+    text-align: center;
+    width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }

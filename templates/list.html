@@ -7,7 +7,7 @@
 </head>
 <body>
 	<h1>AskMate</h1>
-	<button onclick="location.href ='/add_question'" type="button">Ask a question</button>
+	<button class="button1" onclick="location.href ='/add_question'" type="button">Ask a question</button>
 	<table class ="center">
 		<thead>
 		<th>Id</th>
@@ -25,7 +25,7 @@
 			<td>{{i["vote_number"]}}</td>
 			<td><a href="/questions/{{  i["id"]  }}">{{  i["title"]  }}</td>
         </tr>
-		{% endfor %}]
+		{% endfor %}
 		</tbody>
 	</table>
 

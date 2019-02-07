@@ -26,9 +26,8 @@ def get_all_answers(cursor):
     answers = cursor.fetchall()
     return answers
 
-
 @connection.connection_handler
-def add_new_answer(cursor, answer, question_id):
+def add_new_answer(cursor,answer, question_id):
     new_dict = {
         'submission_time': get_date_time(),
         'vote_number': 0,

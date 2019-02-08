@@ -26,7 +26,7 @@ def display_question(question_id):
                            q_id=int(question_id),
                            answers=answers,
                            question=question,
-                           comments=comments,
+                           comments=comments
                            )
 
 
@@ -35,15 +35,15 @@ def add_answer(question_id):
     if request.method == 'POST':
         new_answer = request.form.get('new_answer')
         data_logic.add_new_answer(new_answer, question_id)
-        return redirect('/questions/' + question_id)
+        return redirect(url_for('display_question', question_id=question_id))
     return render_template("post-answer.html", q_id=question_id)
 
 
 @app.route('/add_question', methods=['GET','POST'])
 def route_add_question():
     if request.method == 'POST':
-        question_id = data_logic.add_question(request.form.get('new_question'), request.form.get('details'))
-        return redirect('/questions/'+str(question_id['id']))
+        question_id = data_logic.add_question(request.form.get('title'), request.form.get('details'))
+        return redirect(url_for('display_question', question_id=question_id))
     else:
         return render_template('add-question.html')
 

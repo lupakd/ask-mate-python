@@ -1,0 +1,8 @@
+refactor lehetosegek:
+- add_comment_answer+add_commetn_answer egysegesites
+- fooldalhoz tartozo server.py-k egyszerusitese
+- server.py fuggvenyek nevkonvencioja
+- queriek osszeolvasztasa kozos tulajdonsagok alapjan
+- html layout hasznalata, hasonlso strukturaju html-ek
+- praktikus, user friendly html-ek (plusz a hozza CSS)
+- logikus, konzekvens CSS

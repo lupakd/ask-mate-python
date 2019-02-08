@@ -5,7 +5,7 @@ question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 't
 answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
 
-def get_date_time(): #nagozn kell
+def get_date_time():
     return datetime.datetime.now()
 
 

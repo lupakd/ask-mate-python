@@ -45,7 +45,7 @@ def route_add_question():
         question_id = data_logic.add_question(request.form.get('new_question'), request.form.get('details'))
         return redirect('/questions/'+str(question_id['id']))
     else:
-        return render_template('add_question.html')
+        return render_template('add-question.html')
 
 
 @app.route('/vote_up/<question_id>')

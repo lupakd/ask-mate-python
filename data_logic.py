@@ -1,8 +1,10 @@
 import connection
 import datetime
+from psycopg2 import sql
 
 question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+comment_fieldnames = ['id', 'question_id', 'answer_id', 'message', 'submission_time', 'edited_count']
 
 
 def get_date_time():
@@ -10,25 +12,7 @@ def get_date_time():
 
 
 @connection.connection_handler
-def get_all_questions(cursor):
-    cursor.execute('''
-                    SELECT * FROM question
-                    ORDER BY id asc;
-    ''')
-    questions = cursor.fetchall()
-    return questions
-
-
-@connection.connection_handler
-def get_all_answers(cursor):
-    cursor.execute('''
-                        SELECT * FROM answer;
-        ''')
-    answers = cursor.fetchall()
-    return answers
-
-@connection.connection_handler
-def add_new_answer(cursor,answer, question_id):
+def add_new_answer(cursor, answer, question_id):
     new_dict = {
         'submission_time': get_date_time(),
         'vote_number': 0,
@@ -62,7 +46,6 @@ def add_question(cursor, title, details):
     return question_id
 
 
-
 @connection.connection_handler
 def add_view(cursor, question_id):
     cursor.execute('''
@@ -71,9 +54,10 @@ def add_view(cursor, question_id):
                     WHERE id = %(question_id)s;
                     ''', {'question_id': question_id})
 
+
 @connection.connection_handler
 def vote_counter(cursor, question_id, direction, ):
-    if direction =='up':
+    if direction == 'up':
         cursor.execute("""
                         UPDATE question
                         SET vote_number = vote_number + 1, view_number = view_number - 1 
@@ -93,7 +77,7 @@ def edit_question(cursor, question_id, newdata):
                     UPDATE question
                     SET message = %(message)s
                     WHERE id = %(id)s;
-                    """,{'message': newdata, 'id': question_id})
+                    """, {'message': newdata, 'id': question_id})
 
 
 @connection.connection_handler
@@ -149,26 +133,6 @@ def delete_all_comments(cursor, answer_id=None, question_id=None):
                         DELETE FROM comment
                         WHERE question_id = %(question_id)s;
                         ''', {'question_id': question_id})
-
-
-@connection.connection_handler
-def get_all_comments(cursor):
-    cursor.execute('''
-                    SELECT * FROM comment;
-                    ''')
-    comments = cursor.fetchall()
-    return comments
-
-
-@connection.connection_handler
-def get_one_comment(cursor, comment_id):
-    cursor.execute('''
-                    SELECT * FROM comment
-                    WHERE id = %(comment_id)s;    
-                ''', {'comment_id': comment_id}
-                   )
-    comment = cursor.fetchone()
-    return comment
 
 
 @connection.connection_handler
@@ -254,30 +218,30 @@ def question_search_result(cursor, ids):
 
 
 @connection.connection_handler
-def get_single_question(cursor, question_id):
-    cursor.execute("""
-                    SELECT * FROM question
-                    WHERE id = %(question_id)s;
-    """, {'question_id': question_id})
-    question = cursor.fetchone()
-    return question
-
-
-@connection.connection_handler
-def get_single_answer(cursor, answer_id):
-    cursor.execute("""
-                    SELECT * FROM answer
-                    WHERE id = %(a_id)s;
-    """, {'a_id': answer_id})
-    answer = cursor.fetchone()
-    return answer
-
-
-@connection.connection_handler
-def get_latest_questions(cursor):
-    cursor.execute("""
-                    SELECT * FROM question
-                    ORDER BY id desc LIMIT 5;
-    """)
-    questions = cursor.fetchall()
-    return questions
+def get_data(cursor, table_name, column_names, order_key,
+             order_type='asc', condition_key=None, condition_value=None, limit=None):
+    if condition_key is None:
+        condition_key = 'id'
+        condition_value = sql.SQL('NULL')
+        operator = sql.SQL('IS NOT')
+    else:
+        condition_value = sql.Literal(condition_value)
+        operator = sql.SQL('=')
+    condition = sql.SQL('WHERE {key} {operator} {value}').format(
+                                                    key=sql.Identifier(condition_key),
+                                                    value=condition_value,
+                                                    operator=operator)
+    limit_count = sql.SQL('LIMIT {}').format(sql.Literal(limit))
+    cursor.execute(sql.SQL("""SELECT {column} FROM {table}
+                              {cond}
+                              ORDER BY {order} {type} {limit};
+                    """).format(
+        column=sql.SQL(', ').join(map(sql.Identifier, column_names)),
+        table=sql.Identifier(table_name),
+        order=sql.Identifier(order_key),
+        type=sql.SQL(order_type),
+        cond=condition,
+        limit=limit_count
+    ), column_names)
+    data = cursor.fetchall()
+    return data

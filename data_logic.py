@@ -1,5 +1,5 @@
 import connection
-import datetime
+import utility
 from psycopg2 import sql
 
 question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
@@ -7,43 +7,55 @@ answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'mes
 comment_fieldnames = ['id', 'question_id', 'answer_id', 'message', 'submission_time', 'edited_count']
 
 
-def get_date_time():
-    return datetime.datetime.now()
+@connection.connection_handler
+def get_data(cursor, table_name, column_names, order_key,
+             order_type='asc', condition_key=None, condition_value=None, limit=None):
+    if condition_key is None:
+        condition_key = 'id'
+        condition_value = sql.SQL('NULL')
+        operator = sql.SQL('IS NOT')
+    else:
+        condition_value = sql.Literal(condition_value)
+        operator = sql.SQL('=')
+    condition = sql.SQL('WHERE {key} {operator} {value}').format(
+                                                    key=sql.Identifier(condition_key),
+                                                    value=condition_value,
+                                                    operator=operator)
+    limit_count = sql.SQL('LIMIT {}').format(sql.Literal(limit))
+    cursor.execute(sql.SQL("""SELECT {column} FROM {table}
+                              {cond}
+                              ORDER BY {order} {type} {limit};
+                    """).format(
+        column=sql.SQL(', ').join(map(sql.Identifier, column_names)),
+        table=sql.Identifier(table_name),
+        order=sql.Identifier(order_key),
+        type=sql.SQL(order_type),
+        cond=condition,
+        limit=limit_count
+    ), column_names)
+    data = cursor.fetchall()
+    return data
 
 
 @connection.connection_handler
-def add_new_answer(cursor, answer, question_id):
-    new_dict = {
-        'submission_time': get_date_time(),
-        'vote_number': 0,
-        'question_id': question_id,
-        'message': answer,
-        'image': 0
-    }
-    cursor.execute('''
-                    INSERT INTO answer (submission_time, vote_number, question_id, message, image)
-                    VALUES (%(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s)
-    ''', new_dict)
+def add_new_entry(cursor, fieldnames, data, table):
+    fieldnames = fieldnames[1:]
+    entry = utility.build_entry(fieldnames, data)
+    columns = sql.SQL(', ').join(map(sql.Identifier, fieldnames))
+    values = sql.SQL(', ').join(map(sql.Placeholder, fieldnames))
+    print(fieldnames)
+    print(columns)
+    print(values)
+    sql_string = sql.SQL('''INSERT INTO {table} ({columns})
+                            VALUES ({values});''').format(table=sql.Identifier(table),
+                                                          columns=columns,
+                                                          values=values)
+    cursor.execute(sql_string, entry)
 
 
 @connection.connection_handler
-def add_question(cursor, title, details):
-    question_to_add = {
-        question_fieldnames[1]: get_date_time(),
-        question_fieldnames[2]: 0,
-        question_fieldnames[3]: 0,
-        question_fieldnames[4]: title,
-        question_fieldnames[5]: details,
-        question_fieldnames[6]: 'image'
-    }
-    cursor.execute('''
-                    INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
-                    VALUES (%(submission_time)s, %(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s);
-                    SELECT id FROM question
-                    WHERE title = %(title)s;
-    ''', question_to_add)
-    question_id = cursor.fetchone()
-    return question_id
+def update_entry(cursor, table, expression, condition):
+    pass
 
 
 @connection.connection_handler
@@ -136,37 +148,6 @@ def delete_all_comments(cursor, answer_id=None, question_id=None):
 
 
 @connection.connection_handler
-def add_comment(cursor,  message, question_id, answer_id=None):
-    new_comment = {
-                    'question_id': question_id,
-                    'answer_id': answer_id,
-                    'message': message,
-                    'submission_time': get_date_time(),
-                    'edited_count': 0
-    }
-    cursor.execute('''
-                    INSERT INTO comment (question_id, answer_id, message, submission_time, edited_count)
-                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s, %(edited_count)s)        
-                    ''', new_comment)
-
-
-@connection.connection_handler
-def get_question_id(cursor, answer_id=None, comment_id=None):
-    if answer_id is not None:
-        cursor.execute('''
-                        SELECT question_id FROM answer
-                        WHERE id = %(answer_id)s;
-                    ''', {'answer_id': answer_id})
-    else:
-        cursor.execute('''
-                                SELECT question_id FROM comment
-                                WHERE id = %(comment_id)s;
-                    ''', {'comment_id': comment_id})
-    raw_id = cursor.fetchone()
-    return raw_id['question_id']
-
-
-@connection.connection_handler
 def edit_comment(cursor, comment_id, message):
     cursor.execute('''
                     UPDATE comment
@@ -217,31 +198,3 @@ def question_search_result(cursor, ids):
     return questions
 
 
-@connection.connection_handler
-def get_data(cursor, table_name, column_names, order_key,
-             order_type='asc', condition_key=None, condition_value=None, limit=None):
-    if condition_key is None:
-        condition_key = 'id'
-        condition_value = sql.SQL('NULL')
-        operator = sql.SQL('IS NOT')
-    else:
-        condition_value = sql.Literal(condition_value)
-        operator = sql.SQL('=')
-    condition = sql.SQL('WHERE {key} {operator} {value}').format(
-                                                    key=sql.Identifier(condition_key),
-                                                    value=condition_value,
-                                                    operator=operator)
-    limit_count = sql.SQL('LIMIT {}').format(sql.Literal(limit))
-    cursor.execute(sql.SQL("""SELECT {column} FROM {table}
-                              {cond}
-                              ORDER BY {order} {type} {limit};
-                    """).format(
-        column=sql.SQL(', ').join(map(sql.Identifier, column_names)),
-        table=sql.Identifier(table_name),
-        order=sql.Identifier(order_key),
-        type=sql.SQL(order_type),
-        cond=condition,
-        limit=limit_count
-    ), column_names)
-    data = cursor.fetchall()
-    return data

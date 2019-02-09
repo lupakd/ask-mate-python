@@ -31,19 +31,23 @@ def display_question(question_id):
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
-def add_answer(question_id):
+def route_add_answer(question_id):
     if request.method == 'POST':
-        new_answer = request.form.get('new_answer')
-        dl.add_new_answer(new_answer, question_id)
+        data = {'message': request.form.get('message'),
+                'question_id': question_id}
+        dl.add_new_entry(dl.answer_fieldnames, data, 'answer')
         return redirect(url_for('display_question', question_id=question_id))
-    return render_template("post-answer.html", q_id=question_id)
+    return render_template("post-answer.html", question_id=question_id)
 
 
 @app.route('/add_question', methods=['GET','POST'])
 def route_add_question():
     if request.method == 'POST':
-        question_id = dl.add_question(request.form.get('title'), request.form.get('details'))
-        return redirect(url_for('display_question', question_id=question_id))
+        data = {'title': request.form.get('title'),
+                'message': request.form.get('message')}
+        dl.add_new_entry(dl.question_fieldnames, data, 'question')
+        question_id = dl.get_data('question', ['id'], 'id', 'desc', limit=1)
+        return redirect(url_for('display_question', question_id=question_id[0]['id']))
     else:
         return render_template('add-question.html')
 
@@ -99,8 +103,10 @@ def edit(question_id):
 @app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])
 def add_comment_question(question_id):
     if request.method == 'POST':
-        message = request.form.get('message')
-        dl.add_comment(message, question_id=question_id)
+        data = {'message': request.form.get('message'),
+                'question_id': question_id,
+                'answer_id': None}
+        dl.add_new_entry(dl.comment_fieldnames, data, 'comment')
         return redirect(url_for('display_question', question_id=question_id))
     else:
         specific_url = url_for('add_comment_question', question_id=question_id)
@@ -110,10 +116,12 @@ def add_comment_question(question_id):
 @app.route('/answer/<answer_id>/new-comment', methods=['GET', 'POST'])
 def add_comment_answer(answer_id):
     if request.method == 'POST':
-        message = request.form.get('message')
-        question_id = dl.get_question_id(answer_id)
-        dl.add_comment(message, question_id=question_id, answer_id=answer_id)
-        return redirect(url_for('display_question', question_id=question_id))
+        question_id = dl.get_data('answer', ['question_id'], 'id', 'asc', 'id', answer_id)
+        data = {'message': request.form.get('message'),
+                'answer_id': answer_id,
+                'question_id':question_id[0]['question_id']}
+        dl.add_new_entry(dl.comment_fieldnames, data, 'comment')
+        return redirect(url_for('display_question', question_id=question_id[0]['question_id']))
     else:
         specific_url = url_for('add_comment_answer', answer_id=answer_id)
         return render_template('new-comment.html', answer_id=answer_id, specific_url=specific_url)
@@ -121,12 +129,12 @@ def add_comment_answer(answer_id):
 
 @app.route('/comments/<comment_id>/delete', methods=['POST', 'GET'])
 def delete_comment(comment_id):
-    question_id = dl.get_question_id(comment_id=comment_id)
+    question_id = dl.get_data('comment', ['question_id'], 'id', 'asc', 'id', comment_id)
     if request.method == 'GET':
-        return render_template('confirm.html', comment_id=comment_id, question_id=question_id)
+        return render_template('confirm.html', comment_id=comment_id, question_id=question_id[0]['question_id'])
     else:
         dl.delete_one_comment(comment_id)
-        return redirect(url_for('display_question', question_id=question_id))
+        return redirect(url_for('display_question', question_id=question_id[0]['question_id']))
 
 
 @app.route('/comments/<comment_id>/edit', methods=['GET', 'POST'])
@@ -137,8 +145,8 @@ def edit_comment(comment_id):
     else:
         message = request.form.get('message')
         dl.edit_comment(comment_id=comment_id, message=message)
-        question_id = dl.get_question_id(comment_id=comment_id)
-        return redirect(url_for('display_question', question_id=question_id))
+        question_id = dl.get_data('comment', ['question_id'], 'id', 'asc', 'id', comment_id)
+        return redirect(url_for('display_question', question_id=question_id[0]['question_id']))
 
 
 @app.route('/search')

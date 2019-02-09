@@ -56,8 +56,8 @@
 
 <h1>Answers:</h1>
     <div class="border>">
-       {%  for line in answers  %}
-          {%  if q_id == line["question_id"]  %}
+       {% for line in answers %}
+          {% if q_id == line["question_id"] %}
     <p>{{ line["message"] }}</p>
     <p>{{ line["vote_number"] }}</p>
     <p>{{ line["submission_time"] }}</p>

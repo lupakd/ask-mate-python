@@ -13,15 +13,15 @@ def route_main():
 
 @app.route('/list')
 def route_list():
-    return render_template('list.html', questions=data_logic.get_all_questions())
+    return render_template('list.html', questions=data_logic.get_all_rows('questions'))
 
 
 @app.route('/questions/<question_id>')
 def display_question(question_id):
     data_logic.add_view(question_id)
-    answers = data_logic.get_all_answers()
-    question = data_logic.get_single_question(question_id)
-    comments = data_logic.get_all_comments()
+    answers = data_logic.get_all_rows('answer')
+    comments = data_logic.get_all_rows('comment')
+    question = data_logic.get_single_row(question_id, 'question')
     return render_template("questions.html",
                            q_id=int(question_id),
                            answers=answers,
@@ -62,7 +62,7 @@ def vote_down(question_id):
 
 @app.route('/question/<question_id>/delete', methods=['GET', 'POST'])
 def delete_question(question_id, ):
-    data_logic.delete_all_comments(question_id=question_id) #todo not tested
+    data_logic.delete_all_comments(question_id=question_id)
     data_logic.delete_question(question_id)
     data_logic.delete_question_answers(question_id)
     return redirect('/')
@@ -70,15 +70,15 @@ def delete_question(question_id, ):
 
 @app.route('/answer/<question_id>/<answer_id>/delete', methods=['GET', 'POST'])
 def delete_answer(answer_id, question_id):
-    data_logic.delete_all_comments(answer_id=answer_id)   #todo not tested
+    data_logic.delete_all_comments(answer_id=answer_id)
     data_logic.delete_answer(answer_id)
     return redirect("/questions/"+str(question_id))
 
 
 @app.route('/answer/<question_id>/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id, question_id):
-    question = data_logic.get_single_question(question_id)
-    answer = data_logic.get_single_answer(answer_id)
+    question = data_logic.get_single_row(question_id, 'question')
+    answer = data_logic.get_single_row(answer_id, 'answer')
     if request.method == "GET":
         return render_template("edit-answer.html", answer=answer, question=question)
     else:
@@ -88,7 +88,7 @@ def edit_answer(answer_id, question_id):
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit(question_id):
-    question = data_logic.get_single_question(question_id=question_id)
+    question = data_logic.get_single_row(question_id, 'question')
     if request.method == "GET":
         return render_template("edit.html", question=question)
     else:
@@ -132,7 +132,7 @@ def delete_comment(comment_id):
 @app.route('/comments/<comment_id>/edit', methods=['GET', 'POST'])
 def edit_comment(comment_id):
     if request.method == 'GET':
-        comment = data_logic.get_one_comment(comment_id)
+        comment = data_logic.get_single_row(comment_id, 'comment')
         return render_template('edit-comment.html', comment=comment)
     else:
         message = request.form.get('message')

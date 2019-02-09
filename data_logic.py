@@ -1,5 +1,7 @@
+from psycopg2 import sql
 import connection
 import datetime
+
 
 question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
@@ -10,22 +12,15 @@ def get_date_time():
 
 
 @connection.connection_handler
-def get_all_questions(cursor):
-    cursor.execute('''
-                    SELECT * FROM question
+def get_all_rows(cursor, table_name):
+    cursor.execute(
+        sql.SQL('''
+                    SELECT * FROM {table}
                     ORDER BY id asc;
-    ''')
+    ''').format(table=sql.Identifier(table_name)))
     questions = cursor.fetchall()
     return questions
 
-
-@connection.connection_handler
-def get_all_answers(cursor):
-    cursor.execute('''
-                        SELECT * FROM answer;
-        ''')
-    answers = cursor.fetchall()
-    return answers
 
 @connection.connection_handler
 def add_new_answer(cursor,answer, question_id):
@@ -152,26 +147,6 @@ def delete_all_comments(cursor, answer_id=None, question_id=None):
 
 
 @connection.connection_handler
-def get_all_comments(cursor):
-    cursor.execute('''
-                    SELECT * FROM comment;
-                    ''')
-    comments = cursor.fetchall()
-    return comments
-
-
-@connection.connection_handler
-def get_one_comment(cursor, comment_id):
-    cursor.execute('''
-                    SELECT * FROM comment
-                    WHERE id = %(comment_id)s;    
-                ''', {'comment_id': comment_id}
-                   )
-    comment = cursor.fetchone()
-    return comment
-
-
-@connection.connection_handler
 def add_comment(cursor,  message, question_id, answer_id=None):
     new_comment = {
                     'question_id': question_id,
@@ -254,24 +229,14 @@ def question_search_result(cursor, ids):
 
 
 @connection.connection_handler
-def get_single_question(cursor, question_id):
-    cursor.execute("""
-                    SELECT * FROM question
-                    WHERE id = %(question_id)s;
-    """, {'question_id': question_id})
-    question = cursor.fetchone()
-    return question
-
-
-@connection.connection_handler
-def get_single_answer(cursor, answer_id):
-    cursor.execute("""
-                    SELECT * FROM answer
-                    WHERE id = %(a_id)s;
-    """, {'a_id': answer_id})
-    answer = cursor.fetchone()
-    return answer
-
+def get_single_row(cursor, id, table_name):
+    cursor.execute(
+        sql.SQL("""
+                SELECT * FROM {table}
+                WHERE id = %(row_id)s;
+    """).format(table=sql.Identifier(table_name)), {'row_id': id})
+    single_row = cursor.fetchone()
+    return single_row
 
 @connection.connection_handler
 def get_latest_questions(cursor):

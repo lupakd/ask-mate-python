@@ -1,100 +1,55 @@
-<!DOCTYPE html>
-<html>
-<head>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<title>Question {{ q_id }}</title>
-</head>
-<body>
-<a href="{{ url_for('route_main') }}"><button class="button1" type="button">Back</button></a>
-<br>
-<a href="{{ url_for('route_add_answer', question_id=q_id) }}"><button class="button1" type="button">New Answer</button></a>
-    <h1>
-    {{ question[0]['title'] }}
-    </h1>
-    <h3>Question ID:</h3>
-    <p>{{ question[0]["id"] }}</p>
-    <h3>Date:</h3>
-    <p>{{ question[0]["submission_time"] }}</p>
-    <h3>Views:</h3>
-    <p>{{ question[0]["view_number"] }}</p>
-    <h3>Vote point:</h3>
-    <p>{{ question[0]["vote_number"] }}
-        <a href="{{ url_for('question_vote_up', question_id=q_id) }}"><button type="button">/\</button></a>
-        <a href="{{ url_for('question_vote_down', question_id=q_id) }}"><button type="button">\/</button></a>
-    </p>
-    <h3>Details:</h3>
-    <p class="description">{{ question[0]["message"] }}</p>
-    <a href="{{ url_for('route_edit_question', question_id=q_id) }}"><button class="button1" type="button">edit</button></a>
-    <a href="{{ url_for('route_delete_question', question_id=q_id) }}"><button class="button1" type="button"><i class="fa fa-trash"></i></button></a>
-
-    <h3>Comments</h3>
-<table class="center">
+{% extends 'layout.html' %}
+{% block body %}
+    <a href="{{ url_for('route_edit_question', question_id=question_id) }}"><button>Ask question</button></a>
+    <a href="{{ url_for('route_delete_question', question_id=question_id) }}"><button>Delete question</button></a>
+    <a href="{{ url_for('route_add_answer', question_id=question_id) }}"><button>Add answer</button></a>
+<table>
+    <h2>Question</h2>
     <tr>
-        <th>Comment ID</th>
-        <th>Comment</th>
-        <th>Submission time</th>
-        <th>Edits</th>
+        {% for item in question_header %}
+            <th>{{ item }}</th>
+        {% endfor %}
     </tr>
-    {% for comment in comments %}
-    {% if comment['question_id'] == q_id and not comment['answer_id']  %}
+    <tr>
+        {% for item in question[0].values() %}
+            <td>{{ item }}</td>
+        {% endfor %}
+        <td></td>
+    </tr>
+</table>
+
+<table>
+    <h3>Answers</h3>
+    {% for answer_entry in answers %}
         <tr>
-            <td>{{ comment['id'] }}</td>
-            <td>{{ comment['message'] }}</td>
-            <td>{{ comment['submission_time'] }}</td>
-            <td>{{ comment['edited_count'] }}</td>
-            <td><a href="{{ url_for('edit_comment', comment_id=comment['id']) }}"><button class="button1">Edit</button></a></td>
-            <td><a href="{{ url_for('delete_comment', comment_id=comment['id']) }}">
-                <button class="button1"><i class="fa fa-trash button1"></i></button>
-                </a>
-            </td>
+            {% for item in answer_header %}
+                <th>{{ item }}</th>
+            {% endfor %}
         </tr>
-    {% endif %}
+        <a href="{{ url_for('delete_answer', question_id=question_id, answer_id=answer_entry['id']) }}"><button>Delete_answer</button></a>
+        <a href="{{ url_for('route_edit_answer', question_id=question_id, answer_id=answer_entry['id']) }}"><button>Edit answer</button></a>
+        <tr>
+            {% for item in answer_entry.values() %}
+                <td>{{ item }}</td>
+            {% endfor %}
+        </tr>
+        <h5>Comments</h5>
+        <tr>
+            {% for item in comment_header %}
+                <th>{{ item }}</th>
+            {% endfor %}
+        </tr>
+            {% for comment_entry in comments %}
+                {% if comment_entry['answer_id'] == answer_entry['id'] %}
+                    <tr>
+                    {% for item in comment_entry.values() %}
+                        <td>{{ item }}</td>
+                    {% endfor %}
+                        <td><a href="{{ url_for('delete_comment', comment_id=comment_entry['id']) }}"><button>Delete comment</button></a></td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
     {% endfor %}
 </table>
-<a href="{{ url_for('add_comment_question', question_id=q_id) }}"><button class="button1">Add comment</button></a>
+{% endblock %}
 
-<h1>Answers:</h1>
-    <div class="border>">
-       {%  for line in answers  %}
-          {%  if q_id == line["question_id"]  %}
-    <p>{{ line["message"] }}</p>
-    <p>{{ line["vote_number"] }}</p>
-    <p>{{ line["submission_time"] }}</p>
-    <a href="{{ url_for('delete_answer', question_id=q_id, answer_id=line['id']) }}">
-        <button type="button"><i class="fa fa-trash button1"></i></button>
-    </a>
-    <a href="{{ url_for('route_edit_answer', question_id=q_id, answer_id=line['id']) }}">
-        <button type="button" class="button1">edit answer</button>
-    </a>
-    </div>
-<h3>Comments</h3>
-<table class="center">
-    <tr>
-        <th>Comment ID</th>
-        <th>Comment</th>
-        <th>Submission time</th>
-        <th>Edits</th>
-    </tr>
-    {% for comment in comments %}
-    {% if comment['answer_id'] == line['id'] %}
-        <tr>
-            <td>{{ comment['id'] }}</td>
-            <td>{{ comment['message'] }}</td>
-            <td>{{ comment['submission_time'] }}</td>
-            <td>{{ comment['edited_count'] }}</td>
-<td><a href="{{ url_for('edit_comment', comment_id=comment['id']) }}"><button class="button1">Edit</button></a></td>
-            <td><a href="{{ url_for('delete_comment', comment_id=comment['id']) }}">
-            <button class="button1"><i class="fa fa-trash button1"></i></button>
-            </a>
-        </td>
-        </tr>
-    {% endif %}
-    {% endfor %}
-</table>
-    <br>
-    <a href="{{ url_for('add_comment_answer', answer_id=line.id) }}"><button class="button1">Add comment</button></a>
-          {%  endif %}
-          {%  endfor  %}
-</body>
-</html>

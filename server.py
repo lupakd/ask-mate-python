@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import data_logic as dl
+import utility as util
 
 app = Flask(__name__)
 
@@ -23,10 +24,13 @@ def display_question(question_id):
     answers = dl.get_data('answer', dl.answer_fieldnames, 'submission_time', 'asc', 'question_id', question_id)
     comments = dl.get_data('comment', dl.comment_fieldnames, 'submission_time', 'asc', 'question_id', question_id)
     return render_template("questions.html",
-                           q_id=int(question_id),
+                           question_id=question_id,
                            answers=answers,
                            question=question,
-                           comments=comments
+                           comments=comments,
+                           question_header=util.format_fieldnames(dl.question_fieldnames),
+                           answer_header=util.format_fieldnames(dl.answer_fieldnames),
+                           comment_header=util.format_fieldnames(dl.comment_fieldnames)
                            )
 
 
@@ -96,7 +100,7 @@ def route_edit_answer(answer_id, question_id):
 def route_edit_question(question_id):
     question = dl.get_data('question', dl.question_fieldnames, 'id', 'asc', 'id', question_id)
     if request.method == "GET":
-        return render_template("edit.html", question=question)
+        return render_template("edit-question.html", question=question)
     else:
         message = request.form.get('message')
         print(message)

@@ -26,7 +26,7 @@
     <h3>Details:</h3>
     <p class="description">{{ question["message"] }}</p>
     <a href="{{ url_for('edit', question_id=q_id) }}"><button class="button1" type="button">edit</button></a>
-    <a href="{{ url_for('delete_question', question_id=q_id) }}"></a> <button class="button1" type="button"><i class="fa fa-trash"></i></button>
+    <a href="{{ url_for('delete_question', question_id=q_id) }}"><button class="button1" type="button"><i class="fa fa-trash"></i></button></a>
 
     <h3>Comments</h3>
 <table class="center">

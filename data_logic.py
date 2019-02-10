@@ -23,6 +23,17 @@ def get_all_rows(cursor, table_name):
 
 
 @connection.connection_handler
+def get_single_row(cursor, id, table_name):
+    cursor.execute(
+        sql.SQL("""
+                SELECT * FROM {table}
+                WHERE id = %(row_id)s;
+    """).format(table=sql.Identifier(table_name)), {'row_id': id})
+    single_row = cursor.fetchone()
+    return single_row
+
+
+@connection.connection_handler
 def add_new_answer(cursor,answer, question_id):
     new_dict = {
         'submission_time': get_date_time(),
@@ -227,16 +238,6 @@ def question_search_result(cursor, ids):
     questions = cursor.fetchall()
     return questions
 
-
-@connection.connection_handler
-def get_single_row(cursor, id, table_name):
-    cursor.execute(
-        sql.SQL("""
-                SELECT * FROM {table}
-                WHERE id = %(row_id)s;
-    """).format(table=sql.Identifier(table_name)), {'row_id': id})
-    single_row = cursor.fetchone()
-    return single_row
 
 @connection.connection_handler
 def get_latest_questions(cursor):

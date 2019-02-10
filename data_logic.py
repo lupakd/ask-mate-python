@@ -18,9 +18,9 @@ def get_data(cursor, table_name, column_names, order_key,
         condition_value = sql.Literal(condition_value)
         operator = sql.SQL('=')
     condition = sql.SQL('WHERE {key} {operator} {value}').format(
-                                                    key=sql.Identifier(condition_key),
-                                                    value=condition_value,
-                                                    operator=operator)
+        key=sql.Identifier(condition_key),
+        value=condition_value,
+        operator=operator)
     limit_count = sql.SQL('LIMIT {}').format(sql.Literal(limit))
     cursor.execute(sql.SQL("""SELECT {column} FROM {table}
                               {cond}
@@ -51,7 +51,8 @@ def add_new_entry(cursor, fieldnames, data, table):
 
 
 @connection.connection_handler
-def update_entry(cursor, table, column_update, new_value, value_type, condition_key, condition_value, condition_operator):
+def update_entry(cursor, table, column_update, new_value, value_type, condition_key, condition_value,
+                 condition_operator):
     if value_type == 'variable':
         value = sql.Placeholder('new_value')
     elif value_type == 'expression':
@@ -72,49 +73,16 @@ def update_entry(cursor, table, column_update, new_value, value_type, condition_
 
 
 @connection.connection_handler
-def delete_question(cursor, question_id):
-    cursor.execute("""
-                    DELETE FROM question
-                    WHERE id = %(id)s
-                    """, {'id': question_id})
-
-
-@connection.connection_handler
-def delete_question_answers(cursor, question_id):
-    cursor.execute("""
-                    DELETE FROM answer
-                    WHERE question_id = %(question_id)s;
-                    """, {'question_id': question_id})
-
-
-@connection.connection_handler
-def delete_answer(cursor, answer_id):
-    cursor.execute('''
-                    DELETE FROM answer
-                    WHERE id = %(answer_id)s;
-                    ''', {'answer_id': answer_id})
-
-
-@connection.connection_handler
-def delete_one_comment(cursor, comment_id):
-    cursor.execute('''
-                    DELETE FROM comment
-                    WHERE  id = %(id)s;
-                    ''', {'id': comment_id})
-
-
-@connection.connection_handler
-def delete_all_comments(cursor, answer_id=None, question_id=None):
-    if answer_id is not None:
-        cursor.execute('''
-                        DELETE FROM comment
-                        WHERE answer_id = %(answer_id)s;
-                        ''', {'answer_id': answer_id})
-    else:
-        cursor.execute('''
-                        DELETE FROM comment
-                        WHERE question_id = %(question_id)s;
-                        ''', {'question_id': question_id})
+def delete_entries(cursor, table, condition_key, condition_value, operator):
+    sql_string = sql.SQL('''
+                            DELETE FROM {table}
+                            WHERE {cond_key} {operator} {value}    ''').format(
+        table=sql.SQL(table),
+        cond_key=sql.SQL(condition_key),
+        operator=sql.SQL(operator),
+        value=sql.Placeholder('cond_value')
+    )
+    cursor.execute(sql_string, {'cond_value': condition_value})
 
 
 @connection.connection_handler
@@ -155,5 +123,3 @@ def question_search_result(cursor, ids):
     ''', {'id_list': tuple(ids)})
     questions = cursor.fetchall()
     return questions
-
-

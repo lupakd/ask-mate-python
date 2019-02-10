@@ -68,17 +68,17 @@ def question_vote_down(question_id):
 
 @app.route('/question/<question_id>/delete', methods=['GET', 'POST'])
 def delete_question(question_id, ):
-    dl.delete_all_comments(question_id=question_id)
-    dl.delete_question(question_id)
-    dl.delete_question_answers(question_id)
-    return redirect('/')
+    dl.delete_entries('comment', 'question_id', question_id, '=')
+    dl.delete_entries('answer', 'question_id', question_id, '=')
+    dl.delete_entries('question', 'id', question_id, '=')
+    return redirect(url_for('route_list'))
 
 
 @app.route('/answer/<question_id>/<answer_id>/delete', methods=['GET', 'POST'])
 def delete_answer(answer_id, question_id):
-    dl.delete_all_comments(answer_id=answer_id)
-    dl.delete_answer(answer_id)
-    return redirect("/questions/"+str(question_id))
+    dl.delete_entries('comment', 'answer_id', answer_id, '=')
+    dl.delete_entries('answer', 'id', answer_id, '=')
+    return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route('/answer/<question_id>/<answer_id>/edit', methods=['GET', 'POST'])
@@ -137,7 +137,7 @@ def delete_comment(comment_id):
     if request.method == 'GET':
         return render_template('confirm.html', comment_id=comment_id, question_id=question_id[0]['question_id'])
     else:
-        dl.delete_one_comment(comment_id)
+        dl.delete_entries('comment', 'id', comment_id, '=')
         return redirect(url_for('display_question', question_id=question_id[0]['question_id']))
 
 

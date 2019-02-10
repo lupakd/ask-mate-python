@@ -21,7 +21,7 @@ def display_question(question_id):
     dl.update_entry('question', 'view_number', 'view_number + 1', 'expression', 'id', question_id, '=')
     question = dl.get_data('question', dl.question_fieldnames, 'id', 'asc', 'id', question_id)
     answers = dl.get_data('answer', dl.answer_fieldnames, 'submission_time', 'asc', 'question_id', question_id)
-    comments = dl.get_data('comment', dl.comment_fieldnames, 'submission_time', 'asc')
+    comments = dl.get_data('comment', dl.comment_fieldnames, 'submission_time', 'asc', 'question_id', question_id)
     return render_template("questions.html",
                            q_id=int(question_id),
                            answers=answers,
@@ -67,7 +67,7 @@ def question_vote_down(question_id):
 
 
 @app.route('/question/<question_id>/delete', methods=['GET', 'POST'])
-def delete_question(question_id, ):
+def route_delete_question(question_id):
     dl.delete_entries('comment', 'question_id', question_id, '=')
     dl.delete_entries('answer', 'question_id', question_id, '=')
     dl.delete_entries('question', 'id', question_id, '=')

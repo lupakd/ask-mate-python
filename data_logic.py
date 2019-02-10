@@ -89,4 +89,3 @@ def search_quote(cursor, quote):
     result = cursor.fetchall()
     result = tuple([items['id'] for items in result])
     return result
-

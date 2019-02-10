@@ -61,11 +61,12 @@ def add_question(cursor, title, details):
     cursor.execute('''
                     INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
                     VALUES (%(submission_time)s, %(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s);
+                    
                     SELECT id FROM question
                     WHERE title = %(title)s;
     ''', question_to_add)
     question_id = cursor.fetchone()
-    return question_id
+    return question_id['id']
 
 
 
@@ -74,11 +75,12 @@ def add_view(cursor, question_id):
     cursor.execute('''
                     UPDATE question
                     SET view_number = view_number + 1
-                    WHERE id = %(question_id)s;
-                    ''', {'question_id': question_id})
+                    WHERE id = %(id)s;
+                    ''', {'id': question_id})
+
 
 @connection.connection_handler
-def vote_counter(cursor, question_id, direction, ):
+def vote_counter(cursor, question_id, direction):
     if direction =='up':
         cursor.execute("""
                         UPDATE question
@@ -112,14 +114,6 @@ def edit_answer(cursor, answer_id, newdata):
 
 
 @connection.connection_handler
-def delete_question(cursor, question_id):
-    cursor.execute("""
-                    DELETE FROM question
-                    WHERE id = %(id)s
-                    """, {'id': question_id})
-
-
-@connection.connection_handler
 def delete_question_answers(cursor, question_id):
     cursor.execute("""
                     DELETE FROM answer
@@ -128,19 +122,11 @@ def delete_question_answers(cursor, question_id):
 
 
 @connection.connection_handler
-def delete_answer(cursor, answer_id):
-    cursor.execute('''
-                    DELETE FROM answer
-                    WHERE id = %(answer_id)s;
-                    ''', {'answer_id': answer_id})
-
-
-@connection.connection_handler
-def delete_one_comment(cursor, comment_id):
-    cursor.execute('''
-                    DELETE FROM comment
+def delete_data(cursor, id, table_name):
+    cursor.execute(sql.SQL('''
+                    DELETE FROM {table}
                     WHERE  id = %(id)s;
-                    ''', {'id': comment_id})
+                    ''').format(table=sql.Identifier(table_name)), {'id': id})
 
 
 @connection.connection_handler

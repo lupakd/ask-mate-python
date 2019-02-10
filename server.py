@@ -13,7 +13,7 @@ def route_main():
 
 @app.route('/list')
 def route_list():
-    return render_template('list.html', questions=data_logic.get_all_rows('questions'))
+    return render_template('list.html', questions=data_logic.get_all_rows('question'))
 
 
 @app.route('/questions/<question_id>')
@@ -39,7 +39,7 @@ def add_answer(question_id):
     return render_template("post-answer.html", q_id=question_id)
 
 
-@app.route('/add_question', methods=['GET','POST'])
+@app.route('/add_question', methods=['GET', 'POST'])
 def route_add_question():
     if request.method == 'POST':
         question_id = data_logic.add_question(request.form.get('title'), request.form.get('details'))
@@ -61,17 +61,17 @@ def vote_down(question_id):
 
 
 @app.route('/question/<question_id>/delete', methods=['GET', 'POST'])
-def delete_question(question_id, ):
+def delete_question(question_id):
     data_logic.delete_all_comments(question_id=question_id)
-    data_logic.delete_question(question_id)
     data_logic.delete_question_answers(question_id)
+    data_logic.delete_data(question_id, 'question')
     return redirect('/')
 
 
 @app.route('/answer/<question_id>/<answer_id>/delete', methods=['GET', 'POST'])
 def delete_answer(answer_id, question_id):
     data_logic.delete_all_comments(answer_id=answer_id)
-    data_logic.delete_answer(answer_id)
+    data_logic.delete_data(answer_id, 'answer')
     return redirect("/questions/"+str(question_id))
 
 
@@ -125,7 +125,7 @@ def delete_comment(comment_id):
     if request.method == 'GET':
         return render_template('confirm.html', comment_id=comment_id, question_id=question_id)
     else:
-        data_logic.delete_one_comment(comment_id)
+        data_logic.delete_data(comment_id, 'comment')
         return redirect(url_for('display_question', question_id=question_id))
 
 

@@ -6,13 +6,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def route_main():
-    latest = dl.get_data('question', dl.question_fieldnames, 'submission_time', 'ASC', limit='5')
+    latest = dl.get_data('question', dl.question_fieldnames, 'submission_time', 'ASC', condition_op='IS NOT', limit='5')
     return render_template('list.html', questions=latest)
 
 
 @app.route('/list')
 def route_list():
-    questions = dl.get_data('question', dl.question_fieldnames, 'submission_time', 'asc')
+    questions = dl.get_data('question', dl.question_fieldnames, 'submission_time', 'asc', condition_op='IS NOT')
     return render_template('list.html', questions=questions)
 
 
@@ -156,10 +156,8 @@ def edit_comment(comment_id):
 @app.route('/search')
 def search_question():
     quote = request.args.get('q')
-    question_ids = dl.convert_search_result(dl.search_questions(quote))
-    answer_ids = dl.convert_search_result(dl.search_answers(quote))
-    ids = question_ids | answer_ids
-    questions = dl.question_search_result(list(ids))
+    ids = dl.search_quote(quote)
+    questions = dl.get_data('question', dl.question_fieldnames, 'submission_time', 'asc', 'id', ids, 'IN')
     return render_template('list.html', questions=questions)
 
 

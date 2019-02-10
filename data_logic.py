@@ -9,18 +9,15 @@ comment_fieldnames = ['id', 'question_id', 'answer_id', 'message', 'submission_t
 
 @connection.connection_handler
 def get_data(cursor, table_name, column_names, order_key,
-             order_type='asc', condition_key=None, condition_value=None, limit=None):
-    if condition_key is None:
-        condition_key = 'id'
-        condition_value = sql.SQL('NULL')
-        operator = sql.SQL('IS NOT')
+             order_type='asc', condition_key='id', condition_value=None, condition_op='=', limit=None):
+    cond_op = sql.SQL(condition_op)
+    if condition_value is None:
+        cond_value = sql.SQL('NULL')
     else:
-        condition_value = sql.Literal(condition_value)
-        operator = sql.SQL('=')
-    condition = sql.SQL('WHERE {key} {operator} {value}').format(
-        key=sql.Identifier(condition_key),
-        value=condition_value,
-        operator=operator)
+        cond_value = sql.Literal(condition_value)
+    condition = sql.SQL('WHERE {key} {operator} {value}').format(key=sql.Identifier(condition_key),
+                                                                 value=cond_value,
+                                                                 operator=cond_op)
     limit_count = sql.SQL('LIMIT {}').format(sql.Literal(limit))
     cursor.execute(sql.SQL("""SELECT {column} FROM {table}
                               {cond}
@@ -32,7 +29,7 @@ def get_data(cursor, table_name, column_names, order_key,
         type=sql.SQL(order_type),
         cond=condition,
         limit=limit_count
-    ), column_names)
+    ))
     data = cursor.fetchall()
     return data
 
@@ -41,12 +38,10 @@ def get_data(cursor, table_name, column_names, order_key,
 def add_new_entry(cursor, fieldnames, data, table):
     fieldnames = fieldnames[1:]
     entry = utility.build_entry(fieldnames, data)
-    columns = sql.SQL(', ').join(map(sql.Identifier, fieldnames))
-    values = sql.SQL(', ').join(map(sql.Placeholder, fieldnames))
     sql_string = sql.SQL('''INSERT INTO {table} ({columns})
                             VALUES ({values});''').format(table=sql.Identifier(table),
-                                                          columns=columns,
-                                                          values=values)
+                                                          columns=sql.SQL(', ').join(map(sql.Identifier, fieldnames)),
+                                                          values=sql.SQL(', ').join(map(sql.Placeholder, fieldnames)))
     cursor.execute(sql_string, entry)
 
 
@@ -57,13 +52,11 @@ def update_entry(cursor, table, column_update, new_value, value_type, condition_
         value = sql.Placeholder('new_value')
     elif value_type == 'expression':
         value = sql.SQL(new_value)
-    print(value)
     expression = sql.SQL('{column} = {value}').format(column=sql.Identifier(column_update),
                                                       value=value)
     condition = sql.SQL('{column} {operator} {value}').format(column=sql.Identifier(condition_key),
                                                               operator=sql.SQL(condition_operator),
                                                               value=sql.Placeholder('condition_value'))
-    print(condition)
     sql_string = sql.SQL('''UPDATE {table}
                             SET {expression}
                             WHERE {condition};''').format(table=sql.Identifier(table),
@@ -86,40 +79,14 @@ def delete_entries(cursor, table, condition_key, condition_value, operator):
 
 
 @connection.connection_handler
-def search_questions(cursor, quote):
+def search_quote(cursor, quote):
     cursor.execute('''
                     SELECT id FROM question
-                    WHERE message LIKE %(quote)s OR title LIKE %(quote)s;
-    ''', {'quote': '%' + quote + '%'})
-    question_ids = cursor.fetchall()
-    return question_ids
-
-
-@connection.connection_handler
-def search_answers(cursor, quote):
-    cursor.execute('''
+                    WHERE message ILIKE %(quote)s OR title ILIKE %(quote)s
+                    UNION
                     SELECT question_id FROM answer
-                    WHERE message LIKE %(quote)s;
-    ''', {'quote': '%' + quote + '%'})
-    answer_ids = cursor.fetchall()
-    for line in answer_ids:
-        line['id'] = line.pop('question_id')
-    return answer_ids
+                    WHERE message ILIKE %(quote)s;''', {'quote': '%' + quote + '%'})
+    result = cursor.fetchall()
+    result = tuple([items['id'] for items in result])
+    return result
 
-
-def convert_search_result(ids):
-    processed_ids = []
-    for line in ids:
-        processed_ids.append(line['id'])
-    return set(processed_ids)
-
-
-@connection.connection_handler
-def question_search_result(cursor, ids):
-    ids = tuple(ids)
-    cursor.execute('''
-                    SELECT * FROM question
-                    WHERE id IN %(id_list)s; 
-    ''', {'id_list': tuple(ids)})
-    questions = cursor.fetchall()
-    return questions

@@ -18,7 +18,7 @@ def route_list():
 
 @app.route('/questions/<question_id>')
 def display_question(question_id):
-    dl.add_view(question_id)
+    dl.update_entry('question', 'view_number', 'view_number + 1', 'expression', 'id', question_id, '=')
     question = dl.get_data('question', dl.question_fieldnames, 'id', 'asc', 'id', question_id)
     answers = dl.get_data('answer', dl.answer_fieldnames, 'submission_time', 'asc', 'question_id', question_id)
     comments = dl.get_data('comment', dl.comment_fieldnames, 'submission_time', 'asc')
@@ -53,15 +53,17 @@ def route_add_question():
 
 
 @app.route('/vote_up/<question_id>')
-def vote_up(question_id):
-    dl.vote_counter(question_id, 'up')
-    return redirect('/questions/' + question_id)
+def question_vote_up(question_id):
+    dl.update_entry('question', 'vote_number', 'vote_number + 1', 'expression', 'id', question_id, '=')
+    dl.update_entry('question', 'view_number', 'view_number - 1', 'expression', 'id', question_id, '=')
+    return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route('/vote_down/<question_id>')
-def vote_down(question_id):
-    dl.vote_counter(question_id, 'down')
-    return redirect('/questions/' + question_id)
+def question_vote_down(question_id):
+    dl.update_entry('question', 'vote_number', 'vote_number - 1', 'expression', 'id', question_id, '=')
+    dl.update_entry('question', 'view_number', 'view_number - 1', 'expression', 'id', question_id, '=')
+    return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route('/question/<question_id>/delete', methods=['GET', 'POST'])
@@ -80,24 +82,26 @@ def delete_answer(answer_id, question_id):
 
 
 @app.route('/answer/<question_id>/<answer_id>/edit', methods=['GET', 'POST'])
-def edit_answer(answer_id, question_id):
+def route_edit_answer(answer_id, question_id):
     question = dl.get_data('question', dl.question_fieldnames, 'id', 'asc', 'id', question_id)
     answer = dl.get_data('answer', dl.answer_fieldnames, 'id', 'asc', 'id', answer_id)
     if request.method == "GET":
         return render_template("edit-answer.html", answer=answer, question=question)
     else:
-        dl.edit_answer(answer_id, request.form.get("edit_a"))
-        return redirect("/questions/"+str(question_id))
+        dl.update_entry('answer', 'message', request.form.get('message'), 'variable', 'id', answer_id, '=')
+        return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
-def edit(question_id):
+def route_edit_question(question_id):
     question = dl.get_data('question', dl.question_fieldnames, 'id', 'asc', 'id', question_id)
     if request.method == "GET":
         return render_template("edit.html", question=question)
     else:
-        dl.edit_question(question_id, request.form.get("edit_q"))
-        return redirect("/questions/"+str(question_id))
+        message = request.form.get('message')
+        print(message)
+        dl.update_entry('question', 'message', message, 'variable', 'id', question_id, '=')
+        return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])
@@ -143,8 +147,8 @@ def edit_comment(comment_id):
         comment = dl.get_data('comment', dl.comment_fieldnames, 'id', 'asc', 'id', comment_id)
         return render_template('edit-comment.html', comment=comment)
     else:
-        message = request.form.get('message')
-        dl.edit_comment(comment_id=comment_id, message=message)
+        dl.update_entry('comment', 'message', request.form.get('message'), 'variable', 'id', comment_id, '=')
+        dl.update_entry('comment', 'edited_count', 'edited_count + 1', 'expression', 'id', comment_id, '=')
         question_id = dl.get_data('comment', ['question_id'], 'id', 'asc', 'id', comment_id)
         return redirect(url_for('display_question', question_id=question_id[0]['question_id']))
 

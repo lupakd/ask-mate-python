@@ -43,9 +43,6 @@ def add_new_entry(cursor, fieldnames, data, table):
     entry = utility.build_entry(fieldnames, data)
     columns = sql.SQL(', ').join(map(sql.Identifier, fieldnames))
     values = sql.SQL(', ').join(map(sql.Placeholder, fieldnames))
-    print(fieldnames)
-    print(columns)
-    print(values)
     sql_string = sql.SQL('''INSERT INTO {table} ({columns})
                             VALUES ({values});''').format(table=sql.Identifier(table),
                                                           columns=columns,
@@ -54,51 +51,24 @@ def add_new_entry(cursor, fieldnames, data, table):
 
 
 @connection.connection_handler
-def update_entry(cursor, table, expression, condition):
-    pass
-
-
-@connection.connection_handler
-def add_view(cursor, question_id):
-    cursor.execute('''
-                    UPDATE question
-                    SET view_number = view_number + 1
-                    WHERE id = %(question_id)s;
-                    ''', {'question_id': question_id})
-
-
-@connection.connection_handler
-def vote_counter(cursor, question_id, direction, ):
-    if direction == 'up':
-        cursor.execute("""
-                        UPDATE question
-                        SET vote_number = vote_number + 1, view_number = view_number - 1 
-                        WHERE id = %(question_id)s;
-                        """, {'question_id': question_id})
-    else:
-        cursor.execute("""
-                       UPDATE question
-                       SET vote_number = vote_number - 1, view_number = view_number - 1 
-                       WHERE id = %(question_id)s;
-                        """, {'question_id': question_id})
-
-
-@connection.connection_handler
-def edit_question(cursor, question_id, newdata):
-    cursor.execute("""
-                    UPDATE question
-                    SET message = %(message)s
-                    WHERE id = %(id)s;
-                    """, {'message': newdata, 'id': question_id})
-
-
-@connection.connection_handler
-def edit_answer(cursor, answer_id, newdata):
-    cursor.execute("""
-                    UPDATE answer
-                    SET message = %(message)s
-                    WHERE id = %(answer_id)s;
-                    """, {'message': newdata, 'answer_id': answer_id})
+def update_entry(cursor, table, column_update, new_value, value_type, condition_key, condition_value, condition_operator):
+    if value_type == 'variable':
+        value = sql.Placeholder('new_value')
+    elif value_type == 'expression':
+        value = sql.SQL(new_value)
+    print(value)
+    expression = sql.SQL('{column} = {value}').format(column=sql.Identifier(column_update),
+                                                      value=value)
+    condition = sql.SQL('{column} {operator} {value}').format(column=sql.Identifier(condition_key),
+                                                              operator=sql.SQL(condition_operator),
+                                                              value=sql.Placeholder('condition_value'))
+    print(condition)
+    sql_string = sql.SQL('''UPDATE {table}
+                            SET {expression}
+                            WHERE {condition};''').format(table=sql.Identifier(table),
+                                                          expression=expression,
+                                                          condition=condition)
+    cursor.execute(sql_string, {'condition_value': condition_value, 'new_value': new_value})
 
 
 @connection.connection_handler
@@ -145,17 +115,6 @@ def delete_all_comments(cursor, answer_id=None, question_id=None):
                         DELETE FROM comment
                         WHERE question_id = %(question_id)s;
                         ''', {'question_id': question_id})
-
-
-@connection.connection_handler
-def edit_comment(cursor, comment_id, message):
-    cursor.execute('''
-                    UPDATE comment
-                    SET edited_count = edited_count + 1, message = %(message)s
-                    WHERE id = %(comment_id)s;
-    ''', {'comment_id': comment_id,
-          'message': message}
-                   )
 
 
 @connection.connection_handler

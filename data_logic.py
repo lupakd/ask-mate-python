@@ -8,6 +8,24 @@ comment_fieldnames = ['id', 'question_id', 'answer_id', 'message', 'submission_t
 
 
 @connection.connection_handler
+def get_all_rows(cursor, table_name, order_key, order_type, limit):
+    cursor.execute(sql.SQL('''
+                    SELECT * FROM {table}
+                    ORDER BY {key} {type}
+                    LIMIT {amount};
+''').format(table=sql.Identifier(table_name),
+            key=sql.Identifier(order_key),
+            type=sql.SQL(order_type),
+            amount=sql.Literal(limit)
+            )   )
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def add_row(cursor, table_name, fieldnames, row_to_add):
+    pass
+
+@connection.connection_handler
 def get_data(cursor, table_name, column_names, order_key,
              order_type='asc', condition_key='id', condition_value=None, condition_op='=', limit=None):
     cond_op = sql.SQL(condition_op)

@@ -4,6 +4,7 @@ import utility as util
 
 app = Flask(__name__)
 
+print(dl.get_all_rows('question', 'id', 'desc', '2'))
 
 @app.route('/')
 def route_main():

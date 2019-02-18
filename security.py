@@ -13,7 +13,7 @@ def verify_password(plain_text_password, hashed_password):
 
 
 @connection.connection_handler
-def login(cursor, user_name, text_password):
+def login(cursor, user_name, text_password):    #todo validate wrong username search
     cursor.execute('''
                     SELECT hashed_pw FROM users
                     WHERE user_name = %s;

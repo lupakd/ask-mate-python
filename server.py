@@ -182,7 +182,7 @@ def route_register():
         session['username'] = form.username.data
         return redirect(url_for('route_main'))
     else:
-        flash(Markup('''<script>alert('Failed to register!')</script>'''))
+        flash(Markup("<script>alert('Failed to register!')</script>"))
     return render_template('register.html', form=form)
 
 

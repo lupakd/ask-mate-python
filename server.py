@@ -1,20 +1,25 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash, Markup
 import data_logic
 import image_handler
 import add_data
 import app_objects
 import security
-import dummy
 
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = image_handler.UPLOAD_FOLDER
-app.secret_key = 'janesz'
+app.secret_key = b'janesz'
+
 
 @app.route('/')
 def route_main():
+    if 'username' in session:
+        user = session['username']
+    else:
+        user = 'Senkise'
     latest = data_logic.get_all_rows('question', 'submission_time', 'desc', '5')
-    return render_template('list.html', questions=latest)
+    return render_template('list.html', questions=latest, user=user)
+
 
 @app.route('/image', methods=['GET', 'POST'])
 def upload_image():
@@ -170,23 +175,35 @@ def search_question():
 @app.route('/register', methods=['POST', 'GET'])
 def route_register():
     form = app_objects.RegisterForm()
-    if request.method == 'GET':
-        return render_template('register.html', title='Register', form=form)
-    elif request.method == 'POST':
+    if request.method == 'GET' and 'username' not in session:
+        return render_template('register.html', form=form)
+    elif request.method == 'POST' and form.validate_on_submit():
         add_data.registration(form.data)
+        session['username'] = form.username.data
         return redirect(url_for('route_main'))
+    else:
+        flash(Markup('''<script>alert('Failed to register!')</script>'''))
+    return render_template('register.html', form=form)
 
 
 @app.route('/login', methods=['POST', 'GET'])
 def route_login():
     form = app_objects.LoginForm()
     if request.method == 'GET':
-        return render_template('login.html', title='Sign In', form=form)
-    elif request.method == 'POST':
-        if security.verify_password(form.data.password, dummy.hashed_pw):
-            session['username'] = form.username
-            print(form.data.username)
+        return render_template('login.html', form=form)
+    elif request.method == 'POST' and form.validate_on_submit():
+        if security.login(form.username.data, form.password.data):
+            session['username'] = form.username.data
             return redirect(url_for('route_main'))
+        else:
+            flash(Markup('''<script>alert('Failed to login!')</script>'''))
+    return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+def route_logout():
+    session.pop('username', None)
+    return redirect(url_for('route_main'))
 
 
 if __name__ == "__main__":

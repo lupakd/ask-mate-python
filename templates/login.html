@@ -5,6 +5,9 @@
     <title>Title</title>
 </head>
 <body>
+{% with messages = get_flashed_messages() %}
+{{ messages[0] }}
+{% endwith %}
 <h1>Sign In</h1>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}

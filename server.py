@@ -1,15 +1,19 @@
+
 from flask import Flask, render_template, request, redirect, url_for
 import data_logic
-
+import image_handler
 
 app = Flask(__name__)
-
+app.config['UPLOAD_FOLDER'] = image_handler.UPLOAD_FOLDER
 
 @app.route('/')
 def route_main():
     latest = data_logic.get_latest_questions()
     return render_template('list.html', questions=latest)
 
+@app.route('/image', methods=['GET', 'POST'])
+def upload_image():
+    return image_handler.upload_file()
 
 @app.route('/list')
 def route_list():
@@ -159,3 +163,5 @@ def search_question():
 
 if __name__ == "__main__":
     app.run()
+
+# <img src="{{url_for('static', filename='images/cute-baby-animals-34.jpg', width=100)}}" />

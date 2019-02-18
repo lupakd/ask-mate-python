@@ -7,67 +7,27 @@ question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 't
 answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
 
-def get_date_time():
-    return datetime.datetime.now()
-
-
 @connection.connection_handler
-def get_all_rows(cursor, table_name):
+def get_all_rows(cursor, table_name, order_key, order_type='desc', limit_count='NULL', off_count='0'):
     cursor.execute(
         sql.SQL('''
                     SELECT * FROM {table}
-                    ORDER BY id asc;
-    ''').format(table=sql.Identifier(table_name)))
+                    ORDER BY {order_key} {order_type} LIMIT {limit_count} OFFSET {off_count};
+    ''').format(table=sql.Identifier(table_name), order_key=sql.Identifier(order_key), order_type=sql.SQL(order_type),
+                limit_count=sql.SQL(limit_count), off_count=sql.Literal(off_count)))
     questions = cursor.fetchall()
     return questions
 
 
 @connection.connection_handler
-def get_single_row(cursor, id, table_name):
+def get_single_row(cursor, row_id, table_name, column_name='id'):
     cursor.execute(
         sql.SQL("""
                 SELECT * FROM {table}
-                WHERE id = %(row_id)s;
-    """).format(table=sql.Identifier(table_name)), {'row_id': id})
+                WHERE {column_name} = %(row_id)s;
+    """).format(table=sql.Identifier(table_name), column_name=sql.Identifier(column_name)), {'row_id': row_id})
     single_row = cursor.fetchone()
     return single_row
-
-
-@connection.connection_handler
-def add_new_answer(cursor,answer, question_id):
-    new_dict = {
-        'submission_time': get_date_time(),
-        'vote_number': 0,
-        'question_id': question_id,
-        'message': answer,
-        'image': 0
-    }
-    cursor.execute('''
-                    INSERT INTO answer (submission_time, vote_number, question_id, message, image)
-                    VALUES (%(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s)
-    ''', new_dict)
-
-
-@connection.connection_handler
-def add_question(cursor, title, details):
-    question_to_add = {
-        question_fieldnames[1]: get_date_time(),
-        question_fieldnames[2]: 0,
-        question_fieldnames[3]: 0,
-        question_fieldnames[4]: title,
-        question_fieldnames[5]: details,
-        question_fieldnames[6]: 'image'
-    }
-    cursor.execute('''
-                    INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
-                    VALUES (%(submission_time)s, %(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s);
-                    
-                    SELECT id FROM question
-                    WHERE title = %(title)s;
-    ''', question_to_add)
-    question_id = cursor.fetchone()
-    return question_id['id']
-
 
 
 @connection.connection_handler
@@ -141,21 +101,6 @@ def delete_all_comments(cursor, answer_id=None, question_id=None):
                         DELETE FROM comment
                         WHERE question_id = %(question_id)s;
                         ''', {'question_id': question_id})
-
-
-@connection.connection_handler
-def add_comment(cursor,  message, question_id, answer_id=None):
-    new_comment = {
-                    'question_id': question_id,
-                    'answer_id': answer_id,
-                    'message': message,
-                    'submission_time': get_date_time(),
-                    'edited_count': 0
-    }
-    cursor.execute('''
-                    INSERT INTO comment (question_id, answer_id, message, submission_time, edited_count)
-                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s, %(edited_count)s)        
-                    ''', new_comment)
 
 
 @connection.connection_handler

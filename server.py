@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import data_logic
+import add_data
 
 
 app = Flask(__name__)
@@ -7,20 +8,21 @@ app = Flask(__name__)
 
 @app.route('/')
 def route_main():
-    latest = data_logic.get_latest_questions()
+    latest = data_logic.get_all_rows('question', 'submission_time', 'desc', '5')
     return render_template('list.html', questions=latest)
 
 
 @app.route('/list')
 def route_list():
-    return render_template('list.html', questions=data_logic.get_all_rows('question'))
+    return render_template('list.html', questions=data_logic.get_all_rows('question', 'submission_time',
+                                                                          'asc'))
 
 
 @app.route('/questions/<question_id>')
 def display_question(question_id):
     data_logic.add_view(question_id)
-    answers = data_logic.get_all_rows('answer')
-    comments = data_logic.get_all_rows('comment')
+    answers = data_logic.get_all_rows('answer', 'submission_time')
+    comments = data_logic.get_all_rows('comment', 'submission_time')
     question = data_logic.get_single_row(question_id, 'question')
     return render_template("questions.html",
                            q_id=int(question_id),
@@ -34,7 +36,7 @@ def display_question(question_id):
 def add_answer(question_id):
     if request.method == 'POST':
         new_answer = request.form.get('new_answer')
-        data_logic.add_new_answer(new_answer, question_id)
+        add_data.answer(question_id, new_answer)
         return redirect(url_for('display_question', question_id=question_id))
     return render_template("post-answer.html", q_id=question_id)
 
@@ -42,7 +44,7 @@ def add_answer(question_id):
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_add_question():
     if request.method == 'POST':
-        question_id = data_logic.add_question(request.form.get('title'), request.form.get('details'))
+        question_id = add_data.question(request.form.get('title'), request.form.get('details'))
         return redirect(url_for('display_question', question_id=question_id))
     else:
         return render_template('add-question.html')
@@ -100,7 +102,7 @@ def edit(question_id):
 def add_comment_question(question_id):
     if request.method == 'POST':
         message = request.form.get('message')
-        data_logic.add_comment(message, question_id=question_id)
+        add_data.comment(message, question_id)
         return redirect(url_for('display_question', question_id=question_id))
     else:
         specific_url = url_for('add_comment_question', question_id=question_id)
@@ -112,7 +114,7 @@ def add_comment_answer(answer_id):
     if request.method == 'POST':
         message = request.form.get('message')
         question_id = data_logic.get_question_id(answer_id)
-        data_logic.add_comment(message, question_id=question_id, answer_id=answer_id)
+        add_data.comment(message, question_id, answer_id)
         return redirect(url_for('display_question', question_id=question_id))
     else:
         specific_url = url_for('add_comment_answer', answer_id=answer_id)
@@ -143,7 +145,7 @@ def edit_comment(comment_id):
 
 @app.route('/latest-questions')
 def latest_questions():
-    latest = data_logic.get_latest_questions()
+    latest = data_logic.get_all_rows('question', 'id', 'desc', '5')
     return render_template('list.html', dict=latest)
 
 

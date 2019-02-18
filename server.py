@@ -2,10 +2,12 @@ from flask import Flask, render_template, request, redirect, url_for
 import data_logic
 import image_handler
 import add_data
+import app_objects
 
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = image_handler.UPLOAD_FOLDER
+app.secret_key = 'janesz'
 
 @app.route('/')
 def route_main():
@@ -161,6 +163,16 @@ def search_question():
     ids = question_ids | answer_ids
     questions = data_logic.question_search_result(list(ids))
     return render_template('list.html', questions=questions)
+
+
+@app.route('/login', methods=['POST', 'GET'])
+def route_login():
+    form = app_objects.LoginForm(request.form)
+    if request.method == 'GET':
+        return render_template('login.html', title='Sign In', form=form)
+    if request.method  == 'POST':
+        print(form.data)
+        return render_template('login.html', title='Sign In', form=form)
 
 
 if __name__ == "__main__":

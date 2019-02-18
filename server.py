@@ -18,8 +18,12 @@ def upload_image():
 
 @app.route('/list')
 def route_list():
-    return render_template('list.html', questions=data_logic.get_all_rows('question', 'submission_time',
-                                                                          'asc'))
+    return render_template('list.html', questions=data_logic.get_all_rows('question', 'submission_time', 'asc'))
+
+
+@app.route('/list-users')
+def route_list_users():
+    return render_template('list.html', users=data_logic.get_all_rows('users', 'id'))
 
 
 @app.route('/questions/<question_id>')

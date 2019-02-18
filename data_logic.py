@@ -1,6 +1,5 @@
 from psycopg2 import sql
 import connection
-import datetime
 
 
 question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']

@@ -2,6 +2,7 @@ import connection
 import utility
 from psycopg2 import sql
 
+
 @connection.connection_handler
 def question(cursor, title, message):
     data = {

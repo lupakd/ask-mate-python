@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import data_logic
 import image_handler
 import add_data
 import app_objects
+import security
+import dummy
 
 
 app = Flask(__name__)
@@ -165,14 +167,26 @@ def search_question():
     return render_template('list.html', questions=questions)
 
 
+@app.route('/register', methods=['POST', 'GET'])
+def route_register():
+    form = app_objects.RegisterForm()
+    if request.method == 'GET':
+        return render_template('register.html', title='Register', form=form)
+    elif request.method == 'POST':
+        add_data.registration(form.data)
+        return redirect(url_for('route_main'))
+
+
 @app.route('/login', methods=['POST', 'GET'])
 def route_login():
-    form = app_objects.LoginForm(request.form)
+    form = app_objects.LoginForm()
     if request.method == 'GET':
         return render_template('login.html', title='Sign In', form=form)
-    if request.method  == 'POST':
-        print(form.data)
-        return render_template('login.html', title='Sign In', form=form)
+    elif request.method == 'POST':
+        if security.verify_password(form.data.password, dummy.hashed_pw):
+            session['username'] = form.username
+            print(form.data.username)
+            return redirect(url_for('route_main'))
 
 
 if __name__ == "__main__":

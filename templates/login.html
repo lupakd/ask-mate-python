@@ -3,13 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<div>
-    {% for message in get_flashed_messages()%}
-        {{ message }}
-    {% endfor %}
-</div>
 <h1>Sign In</h1>
     {% from 'macros/_renderfield.html' import render_field %}
     <form action="" method="post" novalidate>
@@ -20,7 +16,8 @@
         <div>
             {{ render_field(form.password) }}
         </div>
-        <p>{{ form.submit() }}</p>
+        <p>{{ render_field(form.submit) }}</p>
+        <span class="login-error-message {{ login_error_class }}">Wrong username or password!</span>
     </form>
 </body>
 </html>

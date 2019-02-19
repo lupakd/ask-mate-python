@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, Markup
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import data_logic
 import image_handler
 import add_data
@@ -142,7 +142,7 @@ def delete_comment(comment_id):
     if request.method == 'GET':
         return render_template('confirm.html', comment_id=comment_id, question_id=question_id)
     else:
-        data_logic.delete_one_comment(comment_id)
+        data_logic.delete_data(comment_id, 'comments')
         return redirect(url_for('display_question', question_id=question_id))
 
 
@@ -176,8 +176,11 @@ def search_question():
 
 @app.route('/register', methods=['POST', 'GET'])
 def route_register():
+    if 'username' in session:
+        flash('lepj ki, cuni!')
+        return redirect(url_for('route_main'))
     form = app_objects.RegisterForm()
-    if request.method == 'GET' and 'username' not in session:
+    if request.method == 'GET':
         return render_template('register.html', form=form)
     elif request.method == 'POST' and form.validate_on_submit():
         add_data.registration(form.data)
@@ -190,12 +193,12 @@ def route_register():
 def route_login():
     form = app_objects.LoginForm()
     if request.method == 'GET':
-        return render_template('login.html', form=form)
+        return render_template('login.html', form=form, login_error_class='hidden')
     elif request.method == 'POST' and form.validate_on_submit():
         if security.login(form.username.data, form.password.data):
             session['username'] = form.username.data
             return redirect(url_for('route_main'))
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=form, login_error_class='alive')
 
 
 @app.route('/logout')

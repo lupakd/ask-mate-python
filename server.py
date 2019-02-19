@@ -204,7 +204,5 @@ def route_logout():
     return redirect(url_for('route_main'))
 
 
-
-
 if __name__ == "__main__":
     app.run()

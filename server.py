@@ -8,6 +8,8 @@ import security
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = image_handler.UPLOAD_FOLDER
+app.config['RECAPTCHA_PUBLIC_KEY'] = 'csocsikeadasdasdddasd'
+app.config['RECAPTCHA_PRIVATE_KEY'] = 'pocsiasdasdasdasdddake'
 app.secret_key = b'janesz'
 
 
@@ -202,6 +204,8 @@ def route_login():
 
 @app.route('/logout')
 def route_logout():
+    for item in session:
+        print(session[item])
     session.pop('username', None)
     return redirect(url_for('route_main'))
 

@@ -13,10 +13,12 @@ def verify_password(plain_text_password, hashed_password):
 
 
 @connection.connection_handler
-def login(cursor, user_name, text_password):    #todo validate wrong username search
+def login(cursor, user_name, text_password):    #todo validate wrong username search, int password nem jo
     cursor.execute('''
                     SELECT hashed_pw FROM users
                     WHERE user_name = %s;
     ''', (user_name,))
-    encrypted_pw = cursor.fetchone()['hashed_pw']
-    return verify_password(text_password, encrypted_pw)
+    hashed_pw = cursor.fetchone()
+    if hashed_pw is None:
+        return False
+    return verify_password(text_password, hashed_pw['hashed_pw'])

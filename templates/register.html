@@ -19,6 +19,9 @@
         <div class="form-group">
             {{ render_field(form.confirm, class_="form-control") }}
         </div>
+        <div>
+            {{ form.recaptcha }}
+        </div>
         <p>{{ form.submit() }}</p>
     </form>
 </body>

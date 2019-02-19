@@ -4,7 +4,7 @@ from psycopg2 import sql
 
 
 @connection.connection_handler
-def question(cursor, title, message):
+def question(cursor, title, message, user_id):
     data = {
         'submission_time': utility.get_date_time(),
         'view_number': 0,
@@ -12,11 +12,13 @@ def question(cursor, title, message):
         'title': title,
         'message': message,
         'image': None
+        'user_id': user_id
     }
     cursor.execute(
         sql.SQL("""
-                INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
-                VALUES (%(submission_time)s, %(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s); 
+                INSERT INTO question (submission_time, view_number, vote_number, title, message, image, user_id)
+                VALUES (%(submission_time)s, %(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s,
+                %(user_id)s); 
                 
                 SELECT MAX(id) FROM question;
         """), data

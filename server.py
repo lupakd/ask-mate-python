@@ -52,7 +52,8 @@ def add_answer(question_id):
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_add_question():
     if request.method == 'POST':
-        question_id = add_data.question(request.form.get('title'), request.form.get('details'))
+        question_id = add_data.question(request.form.get('title'), request.form.get('details'),
+                                        request.form.get('user_id'))
         return redirect(url_for('display_question', question_id=question_id))
     else:
         return render_template('add-question.html')

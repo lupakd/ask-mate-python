@@ -8,8 +8,6 @@ import security
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = image_handler.UPLOAD_FOLDER
-app.config['RECAPTCHA_PUBLIC_KEY'] = 'csocsikeadasdasdddasd'
-app.config['RECAPTCHA_PRIVATE_KEY'] = 'pocsiasdasdasdasdddake'
 app.secret_key = b'janesz'
 
 
@@ -26,6 +24,7 @@ def route_main():
 @app.route('/image', methods=['GET', 'POST'])
 def upload_image():
     return image_handler.upload_file()
+
 
 @app.route('/list')
 def route_list():
@@ -59,7 +58,8 @@ def add_answer(question_id):
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_add_question():
     if request.method == 'POST':
-        question_id = add_data.question(request.form.get('title'), request.form.get('details'))
+        username = data_logic.get_single_row(session['username'], 'users', 'user_name')
+        question_id = add_data.question(request.form.get('title'), request.form.get('details'), username)
         return redirect(url_for('display_question', question_id=question_id))
     else:
         return render_template('add-question.html')
@@ -183,8 +183,6 @@ def route_register():
         add_data.registration(form.data)
         session['username'] = form.username.data
         return redirect(url_for('route_main'))
-    else:
-        flash(Markup("<script>alert('Failed to register!')</script>"))
     return render_template('register.html', form=form)
 
 
@@ -197,15 +195,11 @@ def route_login():
         if security.login(form.username.data, form.password.data):
             session['username'] = form.username.data
             return redirect(url_for('route_main'))
-        else:
-            flash(Markup('''<script>alert('Failed to login!')</script>'''))
     return render_template('login.html', form=form)
 
 
 @app.route('/logout')
 def route_logout():
-    for item in session:
-        print(session[item])
     session.pop('username', None)
     return redirect(url_for('route_main'))
 

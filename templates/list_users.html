@@ -1,0 +1,31 @@
+<!-- {% extends "layout.html" %} -->
+
+<!-- {% block content %} -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Users</title>
+    </head>
+    <body>
+        <table class ="center">
+            <tr>
+            <th>Id</th>
+            <th>User name</th>
+            <th>Reputation</th>
+            </tr>
+            <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user["id"] }}</td>
+                <td>{{ user["user_name"] }}</td>
+                <td>{{ user["reputation"] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('route_main') }}"></a>
+    </body>
+</html>
+
+<!-- {% endblock %} -->

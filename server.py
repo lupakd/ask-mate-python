@@ -23,7 +23,7 @@ def route_list():
 
 @app.route('/list-users')
 def route_list_users():
-    return render_template('list.html', users=data_logic.get_all_rows('users', 'id'))
+    return render_template('list_users.html', users=data_logic.get_all_rows('users', 'id'))
 
 
 @app.route('/questions/<question_id>')

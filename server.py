@@ -10,7 +10,7 @@ app.config['UPLOAD_FOLDER'] = image_handler.UPLOAD_FOLDER
 @app.route('/')
 def route_main():
     latest = data_logic.get_all_rows('question', 'submission_time', 'desc', '5')
-    return render_template('list.html', questions=latest)
+    return render_template('list2.html', questions=latest)
 
 @app.route('/image', methods=['GET', 'POST'])
 def upload_image():
@@ -18,7 +18,7 @@ def upload_image():
 
 @app.route('/list')
 def route_list():
-    return render_template('list.html', questions=data_logic.get_all_rows('question', 'submission_time',
+    return render_template('list2.html', questions=data_logic.get_all_rows('question', 'submission_time',
                                                                           'asc'))
 
 
@@ -160,7 +160,7 @@ def search_question():
     answer_ids = data_logic.convert_search_result(data_logic.search_answers(quote))
     ids = question_ids | answer_ids
     questions = data_logic.question_search_result(list(ids))
-    return render_template('list.html', questions=questions)
+    return render_template('list2.html', questions=questions)
 
 
 if __name__ == "__main__":

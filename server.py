@@ -13,8 +13,8 @@ app.secret_key = b'janesz'
 
 @app.route('/')
 def route_main():
-    if 'username' in session:
-        user = session['username']
+    if 'user_name' in session:
+        user = session['user_name']
     else:
         user = 'Senkise'
     latest = data_logic.get_all_rows('question', 'submission_time', 'desc', '5')
@@ -176,34 +176,33 @@ def search_question():
 
 @app.route('/register', methods=['POST', 'GET'])
 def route_register():
-    if 'username' in session:
-        flash('lepj ki, cuni!')
-        return redirect(url_for('route_main'))
     form = app_objects.RegisterForm()
-    if request.method == 'GET':
+    if request.method == 'GET' and 'user_name' not in session:
         return render_template('register.html', form=form)
+    elif 'user_name' in session:
+        flash('lepj ki, cuni!', 'logged-in-error')
     elif request.method == 'POST' and form.validate_on_submit():
         add_data.registration(form.data)
-        session['username'] = form.username.data
-        return redirect(url_for('route_main'))
-    return render_template('register.html', form=form)
+        session['user_name'] = form.username.data
+    return redirect(url_for('route_main'))
 
 
 @app.route('/login', methods=['POST', 'GET'])
 def route_login():
     form = app_objects.LoginForm()
+    login_error_class = 'active'
     if request.method == 'GET':
-        return render_template('login.html', form=form, login_error_class='hidden')
-    elif request.method == 'POST' and form.validate_on_submit():
-        if security.login(form.username.data, form.password.data):
-            session['username'] = form.username.data
-            return redirect(url_for('route_main'))
-    return render_template('login.html', form=form, login_error_class='alive')
+        login_error_class = 'hidden'
+    elif request.method == 'POST' and form.validate_on_submit() and security.login(form.username.data, form.password.data):
+        session['user_name'] = form.username.data
+        return redirect(url_for('route_main'))
+    return render_template('login.html', form=form, login_error_class=login_error_class)
 
 
 @app.route('/logout')
 def route_logout():
-    session.pop('username', None)
+    session.pop('user_name', None)
+    # session.pop('user_id', None)
     return redirect(url_for('route_main'))
 
 

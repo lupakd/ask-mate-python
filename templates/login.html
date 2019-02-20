@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>Sign In</h1>
-    {% from 'macros/_renderfield.html' import render_form_field %}
+    {% from 'macros/_renderfield.html' import render_form_field, logged_hidden_class %}
     <form action="" method="post" novalidate>
          {{ form.hidden_tag() }}
         <div>

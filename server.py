@@ -181,9 +181,13 @@ def route_register():
         return render_template('register.html', form=form)
     elif 'user_name' in session:
         flash('lepj ki, cuni!', 'logged-in-error')
-    elif request.method == 'POST' and form.validate_on_submit():
-        add_data.registration(form.data)
-        session['user_name'] = form.username.data
+    elif request.method == 'POST':
+        if form.validate_on_submit():
+            add_data.registration(form.data)
+            session['user_name'] = form.username.data
+            return redirect(url_for('route_main'))
+        else:
+            return render_template('register.html', form=form)
     return redirect(url_for('route_main'))
 
 

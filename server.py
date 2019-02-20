@@ -139,7 +139,7 @@ def add_comment_answer(answer_id):
     if request.method == 'POST':
         message = request.form.get('message')
         question_id = data_logic.get_question_id(answer_id)
-        add_data.comment(message, question_id, session['user_id'])
+        add_data.comment(message, question_id, session['user_id'], answer_id)
         return redirect(url_for('display_question', question_id=question_id))
     else:
         specific_url = url_for('add_comment_answer', answer_id=answer_id)
@@ -158,13 +158,13 @@ def delete_comment(comment_id):
 
 @app.route('/comments/<comment_id>/edit', methods=['GET', 'POST'])
 def edit_comment(comment_id):
+    question_id = data_logic.get_question_id(comment_id=comment_id)
     if request.method == 'GET':
-        comment = data_logic.get_one_comment(comment_id)
-        return render_template('edit-comment.html', comment=comment)
-    else:
+        comment = data_logic.get_comment(comment_id)
+        return render_template('edit-comment.html', comment=comment, question_id=question_id)
+    elif request.method == 'POST':
         message = request.form.get('message')
         data_logic.edit_comment(comment_id=comment_id, message=message)
-        question_id = data_logic.get_question_id(comment_id=comment_id)
         return redirect(url_for('display_question', question_id=question_id))
 
 

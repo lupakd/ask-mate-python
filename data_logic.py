@@ -30,6 +30,10 @@ def _get_single_row(cursor, row, table_name, column_name='id'):
     return single_row
 
 
+def get_comment(col_value):
+    return _get_single_row(col_value, 'comment')
+
+
 def get_question_by_id(question_id: int):
     return _get_single_row(question_id, 'question')
 
@@ -198,7 +202,7 @@ def reputation(cursor, user_id, category):
                     WHEN %(category)s = 'answer_accept' THEN reputation + 15
                     WHEN %(category)s = 'downvote' THEN reputation -2
                     END
-                    WHERE users.id == %(id)s;   
+                    WHERE users.id = %(id)s;   
     """, {'id': user_id,
           'category': category}
                    )

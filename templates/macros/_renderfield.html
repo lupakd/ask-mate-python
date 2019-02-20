@@ -1,4 +1,4 @@
-{% macro render_field(field) %}
+{% macro render_form_field(field) %}
     {% if field.name != 'submit' %}
     {{ field.label }}
     {% endif %}
@@ -10,3 +10,10 @@
     {% endif %}
 {% endmacro %}
 
+{% macro logged_hidden_class() %}
+{%- if session['username'] is defined %}{{ 'hidden' }}{% endif -%}
+{% endmacro %}
+
+{% macro not_logged_hidden_class() %}
+{%- if session['username'] is undefined %}{{ 'hidden' }}{% endif -%}
+{% endmacro %}

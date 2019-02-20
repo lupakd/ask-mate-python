@@ -30,7 +30,7 @@ def question(cursor, title, message, user_id):
 
 
 @connection.connection_handler
-def answer(cursor, question_id, user_id, message):
+def answer(cursor, message, question_id, user_id):
     data = {
         'submission_time': utility.get_date_time(),
         'vote_number': 0,

@@ -55,7 +55,7 @@ def display_question(question_id):
 def add_answer(question_id):
     if request.method == 'POST':
         new_answer = request.form.get('new_answer')
-        add_data.answer(question_id, session['user_id'], new_answer)
+        add_data.answer(new_answer, question_id, session['user_id'], )
         return redirect(url_for('display_question', question_id=question_id))
     return render_template("post-answer.html", q_id=question_id)
 

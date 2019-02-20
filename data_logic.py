@@ -1,6 +1,6 @@
 from psycopg2 import sql
 import connection
-import datetime
+
 
 question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
@@ -19,15 +19,14 @@ def get_all_rows(cursor, table_name, order_key, order_type='desc', limit_count='
 
 
 @connection.connection_handler
-def _get_single_row(cursor, row_id, table_name, column_name='id'):
+def _get_single_row(cursor, row, table_name, column_name='id'):
     cursor.execute(
         sql.SQL("""
                 SELECT * FROM {table}
-                WHERE {column_name} = %(row_id)s;
-    """).format(table=sql.Identifier(table_name), column_name=sql.Identifier(column_name)), {'row_id': row_id})
+                WHERE {column_name} = %(row)s;
+    """).format(table=sql.Identifier(table_name), column_name=sql.Identifier(column_name)), {'row': row})
     single_row = cursor.fetchone()
     return single_row
-#not good name
 
 
 def get_question_by_id(question_id: int):

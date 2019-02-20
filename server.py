@@ -64,8 +64,7 @@ def add_answer(question_id):
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_add_question():
     if request.method == 'POST':
-        user_name = data_logic.get_single_row(session['username'], 'users', 'user_name')
-        question_id = add_data.question(request.form.get('title'), request.form.get('details'), user_name)
+        #user_name = data_logic.get_single_row(session['username'], 'users', 'user_name')
         question_id = add_data.question(request.form.get('title'), request.form.get('details'), session['user_id'])
         return redirect(url_for('display_question', question_id=question_id))
     else:
@@ -196,6 +195,7 @@ def route_register():
         if form.validate_on_submit():
             add_data.registration(form.data)
             session['user_name'] = form.username.data
+            session['user_id'] = data_logic.get_user_id_by_username(session['user_name'])
             return redirect(url_for('route_main'))
         else:
             return render_template('register.html', form=form)
@@ -210,6 +210,7 @@ def route_login():
         login_error_class = 'hidden'
     elif request.method == 'POST' and form.validate_on_submit() and security.login(form.username.data, form.password.data):
         session['user_name'] = form.username.data
+        session['user_id'] = data_logic.get_user_id_by_username(session['user_name'])
         return redirect(url_for('route_main'))
     return render_template('login.html', form=form, login_error_class=login_error_class)
 

@@ -202,3 +202,15 @@ def reputation(cursor, user_id, category):
     """, {'id': user_id,
           'category': category}
                    )
+
+
+@connection.connection_handler
+def get_user_id_by_username(cursor, username):
+    cursor.execute("""
+                    SELECT id FROM users
+                    WHERE user_name = %(username)s 
+    
+    """, {'username': username})
+
+    user_id = cursor.fetchone()
+    return user_id['id']

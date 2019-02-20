@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, Markup
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import data_logic
 import image_handler
 import add_data
@@ -15,8 +15,8 @@ app.secret_key = b'janesz'
 
 @app.route('/')
 def route_main():
-    if 'username' in session:
-        user = session['username']
+    if 'user_name' in session:
+        user = session['user_name']
     else:
         user = 'Senkise'
     latest = data_logic.get_all_rows('question', 'submission_time', 'desc', '5')
@@ -26,6 +26,7 @@ def route_main():
 @app.route('/image', methods=['GET', 'POST'])
 def upload_image():
     return image_handler.upload_file()
+
 
 @app.route('/list')
 def route_list():
@@ -63,6 +64,8 @@ def add_answer(question_id):
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_add_question():
     if request.method == 'POST':
+        user_name = data_logic.get_single_row(session['username'], 'users', 'user_name')
+        question_id = add_data.question(request.form.get('title'), request.form.get('details'), user_name)
         question_id = add_data.question(request.form.get('title'), request.form.get('details'), session['user_id'])
         return redirect(url_for('display_question', question_id=question_id))
     else:
@@ -146,7 +149,7 @@ def delete_comment(comment_id):
     if request.method == 'GET':
         return render_template('confirm.html', comment_id=comment_id, question_id=question_id)
     else:
-        data_logic.delete_one_comment(comment_id)
+        data_logic.delete_data(comment_id, 'comments')
         return redirect(url_for('display_question', question_id=question_id))
 
 
@@ -181,39 +184,37 @@ def search_question():
 @app.route('/register', methods=['POST', 'GET'])
 def route_register():
     form = app_objects.RegisterForm()
-    if request.method == 'GET' and 'username' not in session:
+    if request.method == 'GET' and 'user_name' not in session:
         return render_template('register.html', form=form)
-    elif request.method == 'POST' and form.validate_on_submit():
-        add_data.registration(form.data)
-        session['username'] = form.username.data
-        return redirect(url_for('route_main'))
-    else:
-        flash(Markup("<script>alert('Failed to register!')</script>"))
-    return render_template('register.html', form=form)
+    elif 'user_name' in session:
+        flash('lepj ki, cuni!', 'logged-in-error')
+    elif request.method == 'POST':
+        if form.validate_on_submit():
+            add_data.registration(form.data)
+            session['user_name'] = form.username.data
+            return redirect(url_for('route_main'))
+        else:
+            return render_template('register.html', form=form)
+    return redirect(url_for('route_main'))
 
 
 @app.route('/login', methods=['POST', 'GET'])
 def route_login():
     form = app_objects.LoginForm()
+    login_error_class = 'active'
     if request.method == 'GET':
-        return render_template('login.html', form=form)
-    elif request.method == 'POST' and form.validate_on_submit():
-        if security.login(form.username.data, form.password.data):
-            session['username'] = form.username.data
-            return redirect(url_for('route_main'))
-        else:
-            flash(Markup('''<script>alert('Failed to login!')</script>'''))
-    return render_template('login.html', form=form)
+        login_error_class = 'hidden'
+    elif request.method == 'POST' and form.validate_on_submit() and security.login(form.username.data, form.password.data):
+        session['user_name'] = form.username.data
+        return redirect(url_for('route_main'))
+    return render_template('login.html', form=form, login_error_class=login_error_class)
 
 
 @app.route('/logout')
 def route_logout():
-    for item in session:
-        print(session[item])
-    session.pop('username', None)
+    session.pop('user_name', None)
+    # session.pop('user_id', None)
     return redirect(url_for('route_main'))
-
-
 
 
 if __name__ == "__main__":

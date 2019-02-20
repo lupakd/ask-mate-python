@@ -3,24 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
 <h1>Register</h1>
-    {% from 'macros/_renderfield.html' import render_field %}
+    {% from 'macros/_renderfield.html' import render_form_field %}
     <form action="" method="post">
         {{ form.hidden_tag() }}
-        <div class="form-group">
-            {{ render_field(form.username, class_="form-control") }}
-        </div>
-        <div class="form-group">
-            {{ render_field(form.password, class_="form-control") }}
-        </div>
-        <div class="form-group">
-            {{ render_field(form.confirm, class_="form-control") }}
+        <div>
+            {{ render_form_field(form.username) }}
         </div>
         <div>
-            {{ form.recaptcha }}
+            {{ render_form_field(form.password) }}
+        </div>
+        <div>
+            {{ render_form_field(form.confirm) }}
         </div>
         <p>{{ form.submit() }}</p>
     </form>

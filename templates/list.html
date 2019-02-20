@@ -28,8 +28,8 @@
         <button class="button1" type="submit">Search</button>
     </form>
     </div>
-    <a href="{{ url_for('route_add_question') }}"><button class="button1" type="button">Ask a question</button></a>
-    <a href="{{ url_for('route_list_users') }}">List all users</a>
+    <a class="{{ not_logged_hidden_class() }}" href="{{ url_for('route_add_question') }}"><button class="button1" type="button">Ask a question</button></a>
+    <a class="{{ not_logged_hidden_class() }}" href="{{ url_for('route_list_users') }}">List all users</a>
 	<table class ="center">
 		<tr>
 		<th>Id</th>
@@ -53,7 +53,7 @@
 	</table>
     <a href="{{ url_for('route_main') }}"><button type="button">List latest questions</button></a>
     <a href="{{ url_for('route_list') }}"><button type="button">List all questions</button></a>
-	<a href="{{ url_for('upload_image') }}"><button type="button">Upload image</button></a>
+	<a class="{{ not_logged_hidden_class() }}" href="{{ url_for('upload_image') }}"><button type="button">Upload image</button></a>
 
 </body>
 </html>

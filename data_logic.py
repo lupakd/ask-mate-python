@@ -218,3 +218,16 @@ def get_user_id_by_username(cursor, username):
 
     user_id = cursor.fetchone()
     return user_id['id']
+
+
+@connection.connection_handler
+def check_vote(cursor, table_name, user_id):
+    cursor.execute(
+        sql.SQL("""
+                SELECT users_vote FROM {table}
+                WHERE users_vote IN %(user_id)s;
+        """).format(table=sql.Identifier(table_name)), {'user_id': user_id}
+    )
+    if cursor.fetchone() is None:
+        return False
+    return True

@@ -2,7 +2,6 @@ from psycopg2 import sql
 import connection
 import datetime
 
-
 question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
@@ -20,7 +19,7 @@ def get_all_rows(cursor, table_name, order_key, order_type='desc', limit_count='
 
 
 @connection.connection_handler
-def get_single_row(cursor, row_id, table_name, column_name='id'):
+def _get_single_row(cursor, row_id, table_name, column_name='id'):
     cursor.execute(
         sql.SQL("""
                 SELECT * FROM {table}
@@ -28,6 +27,15 @@ def get_single_row(cursor, row_id, table_name, column_name='id'):
     """).format(table=sql.Identifier(table_name), column_name=sql.Identifier(column_name)), {'row_id': row_id})
     single_row = cursor.fetchone()
     return single_row
+#not good name
+
+
+def get_question_by_id(question_id: int):
+    return _get_single_row(question_id, 'question')
+
+
+def get_author_id_by_question_id(question_id):
+    return get_question_by_id(question_id).get('user_id')
 
 
 @connection.connection_handler
@@ -40,19 +48,19 @@ def add_view(cursor, question_id):
 
 
 @connection.connection_handler
-def vote_counter(cursor, question_id, direction):
-    if direction =='up':
-        cursor.execute("""
-                        UPDATE question
-                        SET vote_number = vote_number + 1, view_number = view_number - 1 
-                        WHERE id = %(question_id)s;
-                        """, {'question_id': question_id})
-    else:
-        cursor.execute("""
-                       UPDATE question
-                       SET vote_number = vote_number - 1, view_number = view_number - 1 
+def vote_counter(cursor, question_id, table, direction):
+    cursor.execute(
+        sql.SQL(""" UPDATE  {table}
+                       SET vote_number =
+                       CASE
+                       WHEN %(direction)s = 'up' THEN vote_number + 1
+                       WHEN %(direction)s = 'down' THEN vote_number -1
+                       END 
                        WHERE id = %(question_id)s;
-                        """, {'question_id': question_id})
+                            """).format(table=sql.Identifier(table)),
+                                {'question_id': question_id,
+                                 'table': table,
+                                 'direction': direction})
 
 
 @connection.connection_handler
@@ -61,7 +69,7 @@ def edit_question(cursor, question_id, newdata):
                     UPDATE question
                     SET message = %(message)s
                     WHERE id = %(id)s;
-                    """,{'message': newdata, 'id': question_id})
+                    """, {'message': newdata, 'id': question_id})
 
 
 @connection.connection_handler
@@ -178,3 +186,19 @@ def get_latest_questions(cursor):
     """)
     questions = cursor.fetchall()
     return questions
+
+
+@connection.connection_handler
+def reputation(cursor, user_id, category):
+    cursor.execute("""
+                    UPDATE users
+                    SET reputation = CASE 
+                    WHEN %(category)s = 'question_vote' THEN reputation + 5
+                    WHEN %(category)s = 'answer_vote' THEN reputation + 10
+                    WHEN %(category)s = 'answer_accept' THEN reputation + 15
+                    WHEN %(category)s = 'downvote' THEN reputation -2
+                    END
+                    WHERE users.id == %(id)s;   
+    """, {'id': user_id,
+          'category': category}
+                   )

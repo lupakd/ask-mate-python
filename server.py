@@ -27,7 +27,7 @@ def display_question(question_id):
     data_logic.add_view(question_id)
     answers = data_logic.get_all_rows('answer', 'submission_time')
     comments = data_logic.get_all_rows('comment', 'submission_time')
-    question = data_logic.get_single_row(question_id, 'question')
+    question = data_logic.get_question_by_id(question_id)
     return render_template("questions.html",
                            q_id=int(question_id),
                            answers=answers,
@@ -56,13 +56,17 @@ def route_add_question():
 
 @app.route('/vote_up/<question_id>')
 def vote_up(question_id):
-    data_logic.vote_counter(question_id, 'up')
+    data_logic.vote_counter(question_id,'question', 'up')
+    author_id = data_logic.get_author_id_by_question_id(question_id)
+    data_logic.reputation(author_id,'question_vote')
     return redirect('/questions/' + question_id)
 
 
 @app.route('/vote_down/<question_id>')
 def vote_down(question_id):
-    data_logic.vote_counter(question_id, 'down')
+    data_logic.vote_counter(question_id,'question', 'down')
+    author = data_logic.get_author_id_by_question_id(question_id)
+    data_logic.reputation(author, 'downvote')
     return redirect('/questions/' + question_id)
 
 
@@ -131,7 +135,7 @@ def delete_comment(comment_id):
     if request.method == 'GET':
         return render_template('confirm.html', comment_id=comment_id, question_id=question_id)
     else:
-        data_logic.delete_one_comment(comment_id)
+        data_logic.delete_data(comment_id, 'comment')
         return redirect(url_for('display_question', question_id=question_id))
 
 
@@ -164,4 +168,4 @@ def search_question():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

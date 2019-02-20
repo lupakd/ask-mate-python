@@ -30,35 +30,37 @@ def question(cursor, title, message, user_id):
 
 
 @connection.connection_handler
-def answer(cursor, question_id, message):
+def answer(cursor, question_id, user_id, message):
     data = {
         'submission_time': utility.get_date_time(),
         'vote_number': 0,
         'question_id': question_id,
         'message': message,
-        'image': None
+        'image': None,
+        'user_id': user_id
     }
     cursor.execute(
         sql.SQL("""
-               INSERT INTO answer (submission_time, vote_number, question_id, message, image)
-               VALUES (%(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s); 
+               INSERT INTO answer (submission_time, vote_number, question_id, message, image, user_id)
+               VALUES (%(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s, %(user_id)s); 
         """), data
     )
 
 
 @connection.connection_handler
-def comment(cursor, message, question_id, answer_id='0'):
+def comment(cursor, message, question_id, user_id, answer_id='0'):
     data = {
         'question_id': question_id,
         'answer_id': answer_id,
         'message': message,
         'submission_time': utility.get_date_time(),
-        'edited_count': 0
+        'edited_count': 0,
+        'user_id': user_id
     }
     cursor.execute(
         sql.SQL("""
-                INSERT INTO comment (question_id, answer_id, message, submission_time, edited_count)
-                VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s, %(edited_count)s) 
+                INSERT INTO comment (question_id, answer_id, message, submission_time, edited_count, user_id)
+                VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s, %(edited_count)s, %(user_id)s) 
         """), data
     )
 

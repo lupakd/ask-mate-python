@@ -55,7 +55,7 @@ def display_question(question_id):
 def add_answer(question_id):
     if request.method == 'POST':
         new_answer = request.form.get('new_answer')
-        add_data.answer(question_id, new_answer)
+        add_data.answer(question_id, session['user_id'], new_answer)
         return redirect(url_for('display_question', question_id=question_id))
     return render_template("post-answer.html", q_id=question_id)
 
@@ -63,8 +63,7 @@ def add_answer(question_id):
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_add_question():
     if request.method == 'POST':
-        question_id = add_data.question(request.form.get('title'), request.form.get('details'),
-                                        request.form.get('user_id'))
+        question_id = add_data.question(request.form.get('title'), request.form.get('details'), session['user_id'])
         return redirect(url_for('display_question', question_id=question_id))
     else:
         return render_template('add-question.html')
@@ -122,7 +121,7 @@ def edit(question_id):
 def add_comment_question(question_id):
     if request.method == 'POST':
         message = request.form.get('message')
-        add_data.comment(message, question_id)
+        add_data.comment(message, question_id, session['user_id'])
         return redirect(url_for('display_question', question_id=question_id))
     else:
         specific_url = url_for('add_comment_question', question_id=question_id)
@@ -134,7 +133,7 @@ def add_comment_answer(answer_id):
     if request.method == 'POST':
         message = request.form.get('message')
         question_id = data_logic.get_question_id(answer_id)
-        data_logic.add_comment(message, question_id=question_id, answer_id=answer_id)
+        add_data.comment(message, question_id, session['user_id'])
         return redirect(url_for('display_question', question_id=question_id))
     else:
         specific_url = url_for('add_comment_answer', answer_id=answer_id)

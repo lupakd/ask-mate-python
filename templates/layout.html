@@ -16,7 +16,8 @@
 
     </head>
     <body>
-       <nav class="navbar navbar-expand-md sticky-top bg-light">
+    {% from 'macros/_renderfield.html' import logged_hidden_class, not_logged_hidden_class %}
+    <nav class="navbar navbar-expand-md sticky-top bg-light">
         <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
         <div class="navbar-nav mr-auto">
             <a href="{{url_for('route_main') }}">
@@ -36,18 +37,19 @@
     <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#">Right</a>
+                <a class="{{ logged_hidden_class() }} nav-link" href="{{ url_for('route_register') }}">Register</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
+                <a class="{{ not_logged_hidden_class()}}  nav-link " href="{{ url_for('route_logout') }}">Logout</a>
+            </li>
+            <li class="nav-item">
+                <a class="{{ logged_hidden_class() }} nav-link" href="{{ url_for('route_login') }}">Login</a>
+            </li>
+            <li class="nav-item">
+                <p class="{{ not_logged_hidden_class()}}  nav-link">Logged in as {{ session['user_name'] }}</p>
             </li>
         </ul>
     </div>
-    {% from 'macros/_renderfield.html' import logged_hidden_class, not_logged_hidden_class %}
-    <a class="{{ logged_hidden_class() }}" href="{{ url_for('route_register') }}">Register</a>
-    <a class="{{ logged_hidden_class() }}" href="{{ url_for('route_login') }}">Login</a>
-    <a class="{{ not_logged_hidden_class() }}" href="{{ url_for('route_logout') }}">Logout</a>
-           <h2>Logged in as {{ session['user_name'] }}</h2>
 </nav>
         <div  class="content-wrapper">
             {% block content %} {% endblock %}

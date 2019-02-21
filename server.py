@@ -222,5 +222,14 @@ def route_logout():
     return redirect(url_for('route_main'))
 
 
+@app.route('/user/<user_id>')
+def user_page(user_id):
+    return render_template('user_page.html',
+                           questions=data_logic.get_questions_for_question(user_id),
+                           answers=data_logic.get_questions_for_answers(user_id),
+                           comments=data_logic.get_questions_for_comments(user_id))
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)

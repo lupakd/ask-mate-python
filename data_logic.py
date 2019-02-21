@@ -1,8 +1,6 @@
 from psycopg2 import sql
 import connection
 
-
-
 question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
@@ -62,9 +60,9 @@ def vote_counter(cursor, question_id, table, direction):
                        END 
                        WHERE id = %(question_id)s;
                             """).format(table=sql.Identifier(table)),
-                                {'question_id': question_id,
-                                 'table': table,
-                                 'direction': direction})
+        {'question_id': question_id,
+         'table': table,
+         'direction': direction})
 
 
 @connection.connection_handler
@@ -218,3 +216,36 @@ def get_user_id_by_username(cursor, username):
 
     user_id = cursor.fetchone()
     return user_id['id']
+
+
+@connection.connection_handler
+def get_questions_for_comments(cursor, user_id):
+    cursor.execute("""
+    SELECT CASE WHEN comment.question_id IS NULL
+    THEN a.question_id
+  ELSE comment.question_id END,
+       q.message question_message  FROM comment
+LEFT JOIN answer a ON comment.answer_id = a.id
+  LEFT JOIN question q ON comment.question_id = q.id OR a.question_id = q.id
+WHERE  comment.user_id =%(id)s;
+     """, {"id": user_id})
+    return cursor.fetchall
+
+
+@connection.connection_handler
+def get_questions_for_question(cursor, user_id):
+    cursor.execute("""
+    SELECT id, message FROM question
+WHERE  question.user_id =%(id)s;
+""", {"id": user_id})
+    return cursor.fetchall
+
+
+@connection.connection_handler
+def get_questions_for_answers(cursor, user_id):
+    cursor.execute("""
+    SELECT q.id,q.message FROM answer a
+INNER JOIN question q ON a.question_id = q.id
+WHERE  a.user_id = %(id)s;
+     """, {"id": user_id})
+    return cursor.fetchall

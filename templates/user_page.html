@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1>Hello world!</h1>
+<h3>Here the User asked Questions</h3>
+{%for data in questions %}
+<a href="{{url_for('display_question()')}}">{{ data.message}}</a>
+{%endfor%}
+
+{%for data in answers %}
+{%endfor%}
+
+{%for data in comments %}
+{%endfor%}
+</body>
+</html>

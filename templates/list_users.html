@@ -1,13 +1,6 @@
+{% extends "layout.html" %}
 
-
-<!DOCTYPE html>
-<html lang="en">
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <head>
-        <meta charset="UTF-8">
-        <title>Users</title>
-    </head>
-    <body>
+{% block content %}
         <table class ="center">
             <tr>
             <th>Id</th>
@@ -26,7 +19,4 @@
             {% endfor %}
             </tbody>
         </table>
-        <a href="{{ url_for('route_main') }}">Main Page</a>
-    </body>
-</html>
-
+{%endblock%}

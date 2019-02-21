@@ -45,6 +45,17 @@
             <li class="nav-item">
                 <a class="{{ logged_hidden_class() }} nav-link" href="{{ url_for('route_login') }}">Login</a>
             </li>
+
+            <li class="nav-item">
+                {%if session['user_id'] is not none%}
+                <a class="{{ not_logged_hidden_class() }}  nav-link" href="{{ url_for('user_page', user_id=session['user_id']) }}">User Page</a>
+                {%endif%}
+            </li>
+            <li class="nav-item">
+                <a class="{{ not_logged_hidden_class() }}   nav-link" href="{{ url_for('route_list_users') }}">List all users</a>
+
+            </li>
+
             <li class="nav-item">
                 <p class="{{ not_logged_hidden_class()}}  nav-link">Logged in as {{ session['user_name'] }}</p>
             </li>

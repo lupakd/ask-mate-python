@@ -19,6 +19,7 @@ def route_main():
         user = session['user_name']
     else:
         user = 'Senkise'
+        session['user_id'] = None
     latest = data_logic.get_all_rows('question', 'submission_time', 'desc', '5')
     return render_template('list.html', questions=latest, user=user)
 
@@ -207,12 +208,14 @@ def route_register():
 def route_login():
     form = app_objects.LoginForm()
     login_error_class = 'active'
-    if request.method == 'GET':
-        login_error_class = 'hidden'
+    if request.method == 'GET' and 'user_name' in session:
+        flash('lepj ki, cuni!', 'logged-in-error')
+        return redirect(url_for('route_main'))
     elif request.method == 'POST' and form.validate_on_submit() and security.login(form.username.data, form.password.data):
         session['user_name'] = form.username.data
         session['user_id'] = data_logic.get_user_id_by_username(session['user_name'])
         return redirect(url_for('route_main'))
+    login_error_class = 'hidden'
     return render_template('login.html', form=form, login_error_class=login_error_class)
 
 

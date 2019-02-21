@@ -49,7 +49,7 @@ def answer(cursor, message, question_id, user_id):
 
 
 @connection.connection_handler
-def comment(cursor, message, question_id, user_id, answer_id='0'):
+def comment(cursor, message, question_id, user_id, answer_id=None):
     data = {
         'question_id': question_id,
         'answer_id': answer_id,

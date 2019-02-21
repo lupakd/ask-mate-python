@@ -150,7 +150,7 @@ def edit_comment(cursor, comment_id, message):
 def search_questions(cursor, quote):
     cursor.execute('''
                     SELECT id FROM question
-                    WHERE message LIKE %(quote)s OR title LIKE %(quote)s;
+                    WHERE message ILIKE %(quote)s OR title ILIKE %(quote)s;
     ''', {'quote': '%' + quote + '%'})
     question_ids = cursor.fetchall()
     return question_ids
@@ -160,7 +160,7 @@ def search_questions(cursor, quote):
 def search_answers(cursor, quote):
     cursor.execute('''
                     SELECT question_id FROM answer
-                    WHERE message LIKE %(quote)s;
+                    WHERE message ILIKE %(quote)s;
     ''', {'quote': '%' + quote + '%'})
     answer_ids = cursor.fetchall()
     for line in answer_ids:

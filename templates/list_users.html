@@ -3,7 +3,6 @@
 {% block content %}
         <table class ="center">
             <tr>
-            <th>Id</th>
             <th>User name</th>
             <th>Reputation</th>
             <th>Registration Time</th>
@@ -11,7 +10,6 @@
             <tbody>
             {% for user in users %}
             <tr>
-                <td>{{ user["id"] }}</td>
                 <td>{{ user["user_name"] }}</td>
                 <td>{{ user["reputation"] }}</td>
                 <td>{{ user['registration_time'] }}</td>

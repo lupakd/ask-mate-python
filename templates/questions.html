@@ -21,7 +21,7 @@
     <p>{{ question["view_number"] }}</p>
     <h3>Vote point:</h3>
     <p>{{ question["vote_number"] }}
-        {% if user_voted is False %}
+        {% if user_voted == True %}
         <a class="{{ not_logged_hidden_class() }}" href="{{ url_for('vote_up', question_id=q_id) }}"><button type="button">/\</button></a>
         <a class="{{ not_logged_hidden_class() }}" href="{{ url_for('vote_down', question_id=q_id) }}"><button type="button">\/</button></a>
         {% endif %}

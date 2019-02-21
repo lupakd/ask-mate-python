@@ -44,12 +44,13 @@ def display_question(question_id):
     answers = data_logic.get_all_rows('answer', 'submission_time')
     comments = data_logic.get_all_rows('comment', 'submission_time')
     question = data_logic.get_question_by_id(question_id)
+    check_vote = data_logic.check_vote('question', session['user_id'], question_id)
     return render_template("questions.html",
                            q_id=int(question_id),
                            answers=answers,
                            question=question,
                            comments=comments,
-                           user_voted=data_logic.check_vote('question', session['user_id'])
+                           user_voted=check_vote
                            )
 
 
@@ -73,7 +74,7 @@ def route_add_question():
 
 @app.route('/vote_up/<question_id>')
 def vote_up(question_id):
-    data_logic.vote_counter(question_id,'question', 'up')
+    data_logic.vote_counter(question_id, session['user_id'], 'question', 'up')
     author_id = data_logic.get_author_id_by_question_id(question_id)
     data_logic.reputation(author_id,'question_vote')
     return redirect('/questions/' + question_id)
@@ -81,7 +82,7 @@ def vote_up(question_id):
 
 @app.route('/vote_down/<question_id>')
 def vote_down(question_id):
-    data_logic.vote_counter(question_id,'question', 'down')
+    data_logic.vote_counter(question_id, session['user_id'], 'question', 'down')
     author = data_logic.get_author_id_by_question_id(question_id)
     data_logic.reputation(author, 'downvote')
     return redirect('/questions/' + question_id)
@@ -218,7 +219,7 @@ def route_login():
 @app.route('/logout')
 def route_logout():
     session.pop('user_name', None)
-    # session.pop('user_id', None)
+    session.pop('user_id', None)
     return redirect(url_for('route_main'))
 
 

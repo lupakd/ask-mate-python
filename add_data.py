@@ -14,13 +14,14 @@ def question(cursor, title, message, user_id):
         'title': title,
         'message': message,
         'image': None,
-        'user_id': user_id
+        'user_id': user_id,
+        'voted_users': []
     }
     cursor.execute(
         sql.SQL("""
-                INSERT INTO question (submission_time, view_number, vote_number, title, message, image, user_id)
+                INSERT INTO question (submission_time, view_number, vote_number, title, message, image, user_id, voted_users)
                 VALUES (%(submission_time)s, %(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s,
-                %(user_id)s); 
+                %(user_id)s, %(voted_users)s);
                 
                 SELECT MAX(id) FROM question;
         """), data

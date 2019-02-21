@@ -246,12 +246,12 @@ def get_questions_for_comments(cursor, user_id):
     SELECT CASE WHEN comment.question_id IS NULL
     THEN a.question_id
   ELSE comment.question_id END,
-       q.message question_message  FROM comment
+       q.message message  FROM comment
 LEFT JOIN answer a ON comment.answer_id = a.id
   LEFT JOIN question q ON comment.question_id = q.id OR a.question_id = q.id
-WHERE  comment.user_id =%(id)s;
+WHERE  comment.user_id= %(id)s;
      """, {"id": user_id})
-    return cursor.fetchall
+    return cursor.fetchall()
 
 
 @connection.connection_handler
@@ -260,7 +260,7 @@ def get_questions_for_question(cursor, user_id):
     SELECT id, message FROM question
 WHERE  question.user_id =%(id)s;
 """, {"id": user_id})
-    return cursor.fetchall
+    return cursor.fetchall()
 
 
 @connection.connection_handler
@@ -270,4 +270,4 @@ def get_questions_for_answers(cursor, user_id):
 INNER JOIN question q ON a.question_id = q.id
 WHERE  a.user_id = %(id)s;
      """, {"id": user_id})
-    return cursor.fetchall
+    return cursor.fetchall()

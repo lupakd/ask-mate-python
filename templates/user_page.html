@@ -9,13 +9,17 @@
 <h1>Hello world!</h1>
 <h3>Here the User asked Questions</h3>
 {%for data in questions %}
-<a href="{{url_for('display_question()')}}">{{ data.message}}</a>
+<a href="{{url_for('display_question', question_id=data.id )}}">{{ data.message}}</a><br>
 {%endfor%}
-
+<h3>Here the User answered Questions</h3>
 {%for data in answers %}
+<a href="{{url_for('display_question', question_id=data.id )}}">{{ data.message}}</a><br>
 {%endfor%}
 
+<h3>Here the User commented</h3>
 {%for data in comments %}
+<a href="{{url_for('display_question', question_id=data.id )}}">{{ data.message}}</a><br>
 {%endfor%}
+
 </body>
 </html>

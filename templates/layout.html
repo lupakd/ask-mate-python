@@ -8,6 +8,8 @@
    <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.css') }}">
         <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap-grid.css') }}">
         <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap-reboot.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+
 
   <script src="{{ url_for('static',filename='js/bootstrap.js') }}"></script>
   <script src="{{ url_for('static',filename='js/bootstrap.bundle.js') }}"></script>
@@ -41,7 +43,11 @@
             </li>
         </ul>
     </div>
-
+    {% from 'macros/_renderfield.html' import logged_hidden_class, not_logged_hidden_class %}
+    <a class="{{ logged_hidden_class() }}" href="{{ url_for('route_register') }}">Register</a>
+    <a class="{{ logged_hidden_class() }}" href="{{ url_for('route_login') }}">Login</a>
+    <a class="{{ not_logged_hidden_class() }}" href="{{ url_for('route_logout') }}">Logout</a>
+           <h2>Logged in as {{ session['user_name'] }}</h2>
 </nav>
         <div  class="content-wrapper">
             {% block content %} {% endblock %}

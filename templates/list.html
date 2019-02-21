@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-	<title>HomePAge</title>
-</head>
-<body>
-	<h1>AskMate</h1>
-    <h2>Logged in as {{ user }}</h2>
+{% block content %}
+
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
@@ -18,16 +12,8 @@
         {% endfor %}
     {% endif %}
     {% endwith %}
-    {% from 'macros/_renderfield.html' import logged_hidden_class, not_logged_hidden_class %}
-    <a class="{{ logged_hidden_class() }}" href="{{ url_for('route_register') }}">Register</a>
-    <a class="{{ logged_hidden_class() }}" href="{{ url_for('route_login') }}">Login</a>
-    <a class="{{ not_logged_hidden_class() }}" href="{{ url_for('route_logout') }}">Logout</a>
-    <div class="searchbar">
-    <form action="{{ url_for('search_question') }}" method="get">
-        <textarea name="q" id="" cols="16" rows="1,5"></textarea>
-        <button class="button1" type="submit">Search</button>
-    </form>
-    </div>
+
+
     <a href="{{ url_for('route_add_question') }}"><button class="button1" type="button">Ask a question</button></a>
     <a href="{{ url_for('route_list_users') }}">List all users</a>
 	<table class ="center">
@@ -54,6 +40,4 @@
     <a href="{{ url_for('route_main') }}"><button type="button">List latest questions</button></a>
     <a href="{{ url_for('route_list') }}"><button type="button">List all questions</button></a>
 	<a href="{{ url_for('upload_image') }}"><button type="button">Upload image</button></a>
-
-</body>
-</html>
+{%endblock%}

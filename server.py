@@ -19,6 +19,7 @@ def route_main():
         user = session['user_name']
     else:
         user = 'Senkise'
+        session['user_id'] = None
     latest = data_logic.get_all_rows('question', 'submission_time', 'desc', '5')
     return render_template('list.html', questions=latest, user=user)
 
@@ -44,11 +45,13 @@ def display_question(question_id):
     answers = data_logic.get_all_rows('answer', 'submission_time')
     comments = data_logic.get_all_rows('comment', 'submission_time')
     question = data_logic.get_question_by_id(question_id)
+    check_vote = data_logic.check_vote('question', session['user_id'], question_id)
     return render_template("questions.html",
                            q_id=int(question_id),
                            answers=answers,
                            question=question,
-                           comments=comments
+                           comments=comments,
+                           user_voted=check_vote
                            )
 
 
@@ -64,7 +67,6 @@ def add_answer(question_id):
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_add_question():
     if request.method == 'POST':
-        #user_name = data_logic.get_single_row(session['username'], 'users', 'user_name')
         question_id = add_data.question(request.form.get('title'), request.form.get('details'), session['user_id'])
         return redirect(url_for('display_question', question_id=question_id))
     else:
@@ -73,7 +75,7 @@ def route_add_question():
 
 @app.route('/vote_up/<question_id>')
 def vote_up(question_id):
-    data_logic.vote_counter(question_id,'question', 'up')
+    data_logic.vote_counter(question_id, session['user_id'], 'question', 'up')
     author_id = data_logic.get_author_id_by_question_id(question_id)
     data_logic.reputation(author_id,'question_vote')
     return redirect('/questions/' + question_id)
@@ -81,7 +83,7 @@ def vote_up(question_id):
 
 @app.route('/vote_down/<question_id>')
 def vote_down(question_id):
-    data_logic.vote_counter(question_id,'question', 'down')
+    data_logic.vote_counter(question_id, session['user_id'], 'question', 'down')
     author = data_logic.get_author_id_by_question_id(question_id)
     data_logic.reputation(author, 'downvote')
     return redirect('/questions/' + question_id)
@@ -104,8 +106,8 @@ def delete_answer(answer_id, question_id):
 
 @app.route('/answer/<question_id>/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id, question_id):
-    question = data_logic.get_single_row(question_id, 'question')
-    answer = data_logic.get_single_row(answer_id, 'answer')
+    question = data_logic._get_single_row(question_id, 'question')
+    answer = data_logic._get_single_row(answer_id, 'answer')
     if request.method == "GET":
         return render_template("edit-answer.html", answer=answer, question=question)
     else:
@@ -115,7 +117,7 @@ def edit_answer(answer_id, question_id):
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit(question_id):
-    question = data_logic.get_single_row(question_id, 'question')
+    question = data_logic._get_single_row(question_id, 'question')
     if request.method == "GET":
         return render_template("edit.html", question=question)
     else:
@@ -206,19 +208,21 @@ def route_register():
 def route_login():
     form = app_objects.LoginForm()
     login_error_class = 'active'
-    if request.method == 'GET':
-        login_error_class = 'hidden'
+    if request.method == 'GET' and 'user_name' in session:
+        flash('lepj ki, cuni!', 'logged-in-error')
+        return redirect(url_for('route_main'))
     elif request.method == 'POST' and form.validate_on_submit() and security.login(form.username.data, form.password.data):
         session['user_name'] = form.username.data
         session['user_id'] = data_logic.get_user_id_by_username(session['user_name'])
         return redirect(url_for('route_main'))
+    login_error_class = 'hidden'
     return render_template('login.html', form=form, login_error_class=login_error_class)
 
 
 @app.route('/logout')
 def route_logout():
     session.pop('user_name', None)
-    # session.pop('user_id', None)
+    session.pop('user_id', None)
     return redirect(url_for('route_main'))
 
 

@@ -50,19 +50,23 @@ def add_view(cursor, question_id):
 
 
 @connection.connection_handler
-def vote_counter(cursor, question_id, table, direction):
+def vote_counter(cursor, question_id, user_id, table, direction):
     cursor.execute(
         sql.SQL(""" UPDATE  {table}
                        SET vote_number =
                        CASE
                        WHEN %(direction)s = 'up' THEN vote_number + 1
                        WHEN %(direction)s = 'down' THEN vote_number -1
-                       END 
+                       END;
+                       
+                       UPDATE {table}
+                       SET voted_users = %(user_id)s || voted_users
                        WHERE id = %(question_id)s;
                             """).format(table=sql.Identifier(table)),
-        {'question_id': question_id,
-         'table': table,
-         'direction': direction})
+                                {'question_id': question_id,
+                                 'table': table,
+                                 'direction': direction,
+                                 'user_id': user_id})
 
 
 @connection.connection_handler
@@ -144,7 +148,7 @@ def edit_comment(cursor, comment_id, message):
 def search_questions(cursor, quote):
     cursor.execute('''
                     SELECT id FROM question
-                    WHERE message LIKE %(quote)s OR title LIKE %(quote)s;
+                    WHERE message ILIKE %(quote)s OR title ILIKE %(quote)s;
     ''', {'quote': '%' + quote + '%'})
     question_ids = cursor.fetchall()
     return question_ids
@@ -154,7 +158,7 @@ def search_questions(cursor, quote):
 def search_answers(cursor, quote):
     cursor.execute('''
                     SELECT question_id FROM answer
-                    WHERE message LIKE %(quote)s;
+                    WHERE message ILIKE %(quote)s;
     ''', {'quote': '%' + quote + '%'})
     answer_ids = cursor.fetchall()
     for line in answer_ids:
@@ -216,6 +220,24 @@ def get_user_id_by_username(cursor, username):
 
     user_id = cursor.fetchone()
     return user_id['id']
+
+
+@connection.connection_handler
+def check_vote(cursor, table_name, user_id, question_id):
+    cursor.execute(
+        sql.SQL("""
+                SELECT users.id FROM {table} JOIN users
+                ON users.id = ANY (voted_users)
+                WHERE question.id = %(question_id)s and users.id = %(user_id)s;
+        """).format(table=sql.Identifier(table_name)), {
+            'user_id': user_id,
+            'question_id': question_id
+        }
+    )
+    check_result = cursor.fetchall()
+    if check_result == []:
+        return True
+    return False
 
 
 @connection.connection_handler

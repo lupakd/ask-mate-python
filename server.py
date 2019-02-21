@@ -51,7 +51,7 @@ def display_question(question_id):
                            answers=answers,
                            question=question,
                            comments=comments,
-                           user_voted=check_vote
+                           user_voted=check_vote,
                            )
 
 
@@ -86,6 +86,22 @@ def vote_down(question_id):
     data_logic.vote_counter(question_id, session['user_id'], 'question', 'down')
     author = data_logic.get_author_id_by_question_id(question_id)
     data_logic.reputation(author, 'downvote')
+    return redirect('/questions/' + question_id)
+
+
+@app.route('/vote_up_answer/<question_id>/<answer_id>')
+def vote_up_answer(answer_id, question_id):
+    data_logic.vote_counter(answer_id, session['user_id'], 'answer', 'up')
+    author = data_logic.get_author_by_answer_id(answer_id)
+    data_logic.reputation(author,'answer_vote')
+    return redirect('/questions/' + question_id)
+
+
+@app.route('/vote_down_answer/<question_id>/<answer_id>')
+def vote_down_answer(answer_id, question_id):
+    data_logic.vote_counter(answer_id, session['user_id'], 'answer', 'down')
+    author = data_logic.get_author_by_answer_id(answer_id)
+    data_logic.reputation(author,'downvote')
     return redirect('/questions/' + question_id)
 
 
@@ -227,4 +243,6 @@ def route_logout():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,
+            port=8000,
+            host='0.0.0.0')

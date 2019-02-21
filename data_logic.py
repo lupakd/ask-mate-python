@@ -1,8 +1,6 @@
 from psycopg2 import sql
 import connection
 
-
-
 question_fieldnames = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 answer_fieldnames = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
@@ -32,6 +30,14 @@ def _get_single_row(cursor, row, table_name, column_name='id'):
 
 def get_comment(col_value):
     return _get_single_row(col_value, 'comment')
+
+
+def get_answer_by_id(answer_id):
+    return _get_single_row(answer_id, 'answer')
+
+
+def get_author_by_answer_id(answer_id):
+    return get_answer_by_id(answer_id).get('user_id')
 
 
 def get_question_by_id(question_id: int):
@@ -65,10 +71,10 @@ def vote_counter(cursor, question_id, user_id, table, direction):
                        SET voted_users = %(user_id)s || voted_users
                        WHERE id = %(question_id)s;
                             """).format(table=sql.Identifier(table)),
-                                {'question_id': question_id,
-                                 'table': table,
-                                 'direction': direction,
-                                 'user_id': user_id})
+        {'question_id': question_id,
+         'table': table,
+         'direction': direction,
+         'user_id': user_id})
 
 
 @connection.connection_handler
@@ -230,7 +236,7 @@ def check_vote(cursor, table_name, user_id, question_id):
         sql.SQL("""
                 SELECT users.id FROM {table} JOIN users
                 ON users.id = ANY (voted_users)
-                WHERE question.id = %(question_id)s and users.id = %(user_id)s;
+                WHERE {table}.id = %(question_id)s and users.id = %(user_id)s;
         """).format(table=sql.Identifier(table_name)), {
             'user_id': user_id,
             'question_id': question_id

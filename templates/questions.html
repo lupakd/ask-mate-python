@@ -60,6 +60,10 @@
     <p>{{ line["message"] }}</p>
     <p>{{ line["vote_number"] }}</p>
     <p>{{ line["submission_time"] }}</p>
+    {% if session['user_id'] not in line['voted_users'] %}
+    <a class="{{ not_logged_hidden_class() }}" href="{{ url_for('vote_up_answer', question_id=q_id, answer_id=line['id'] ) }}"><button type="button">/\</button></a>
+    <a class="{{ not_logged_hidden_class() }}" href="{{ url_for('vote_down_answer', question_id=q_id, answer_id=line['id']) }}"><button type="button">\/</button></a>
+    {% endif %}
     <a class="{{ not_logged_hidden_class() }}" href="{{ url_for('delete_answer', question_id=q_id, answer_id=line['id']) }}">
         <button type="button"><i class="fa fa-trash button1"></i></button>
     </a>

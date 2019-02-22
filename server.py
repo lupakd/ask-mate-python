@@ -41,7 +41,7 @@ def route_list_for_test():
 
 @app.route('/list-users')
 def route_list_users():
-    return render_template('list_users.html', users=data_logic.get_all_rows('users', 'id'))
+    return render_template('list_users.html', users=data_logic.get_all_rows('users', 'reputation', 'desc'))
 
 
 @app.route('/questions/<question_id>')

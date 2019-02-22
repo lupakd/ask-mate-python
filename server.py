@@ -36,7 +36,7 @@ def route_list():
 
 @app.route('/list-test')
 def route_list_for_test():
-    return render_template('list_bs.html', questions=data_logic.get_all_rows('question', 'submission_time', 'asc'))
+    return render_template('list.html', questions=data_logic.get_all_rows('question', 'submission_time', 'asc'))
 
 
 @app.route('/list-users')

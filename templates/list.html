@@ -13,10 +13,13 @@
     {% endif %}
     {% endwith %}
 
-
+<div class="d-flex justify-content-between">
+  <div class="p-2"><h2>Questions</h2></div>
+  <div class="p-2">
     <a  class="{{ not_logged_hidden_class() }}"  href="{{ url_for('route_add_question') }}"><button class="button1" type="button">Ask a question</button></a>
-
-
+  </div>
+</div>
+<hr>
 	<table class ="center">
 		<tr>
 		<th>Id</th>
@@ -32,8 +35,8 @@
 			<td>{{ question["submission_time"] }}</td>
 			<td>{{ question["view_number"] }}</td>
 			<td>{{ question["vote_number"] }}</td>
-			<td><a href="{{ url_for('display_question', question_id=question['id']) }}">{{ question["title"] }}</a></td>
         </tr>
+		<td><a href="{{ url_for('display_question', question_id=question['id']) }}">{{ question["title"] }}</a></td>
 		{% endfor %}
 
 		</tbody>

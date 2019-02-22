@@ -2,13 +2,11 @@
 
 {% block content %}
 
-
 <a class="{{ not_logged_hidden_class() }}" href="{{ url_for('add_answer', question_id=q_id) }}"><button class="button1" type="button">New Answer</button></a>
     <h1>
     {{ question['title'] }}
     </h1>
-    <h3>Question ID:</h3>
-    <p>{{ question["id"] }}</p>
+    <hr>
     <h3>Date:</h3>
     <p>{{ question["submission_time"] }}</p>
     <h3>Views:</h3>

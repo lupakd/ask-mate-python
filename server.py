@@ -251,7 +251,7 @@ def route_logout():
 
 
 @app.route('/user/<user_id>')
-def user_pageuser_id(user_id):
+def user_page(user_id):
     return render_template('user_page.html',
                            questions=data_logic.get_questions_for_question(user_id),
                            answers=data_logic.get_questions_for_answers(user_id),

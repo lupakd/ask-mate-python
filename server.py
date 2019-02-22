@@ -44,7 +44,7 @@ def route_list_users():
     return render_template('list_users.html', users=data_logic.get_all_rows('users', 'reputation', 'desc'))
 
 
-@app.route('/questions/<question_id>')
+@app.route('/questionsd/<question_id>')
 def display_question(question_id):
     data_logic.add_view(question_id)
     answers = data_logic.get_all_rows('answer', 'submission_time')
@@ -70,7 +70,7 @@ def add_answer(question_id):
     if request.method == 'POST':
         new_answer = request.form.get('new_answer')
         add_data.answer(new_answer, question_id, session['user_id'], )
-        return redirect(url_for('display_question', question_id=question_id))
+        return redirect(url_for('question_page_test', question_id=question_id))
     return render_template("post-answer.html", q_id=question_id)
 
 
@@ -78,7 +78,7 @@ def add_answer(question_id):
 def route_add_question():
     if request.method == 'POST':
         question_id = add_data.question(request.form.get('title'), request.form.get('details'), session['user_id'])
-        return redirect(url_for('display_question', question_id=question_id))
+        return redirect(url_for('question_page_test', question_id=question_id))
     else:
         return render_template('add-question.html')
 
@@ -259,16 +259,18 @@ def user_page(user_id):
                            answers=data_logic.get_questions_for_answers(user_id),
                            comments=data_logic.get_questions_for_comments(user_id))
 
-@app.route('/question-test/<question_id>')
+@app.route('/questions/<question_id>')
 def question_page_test(question_id):
     data_logic.add_view(question_id)
     question = data_logic.get_question(question_id)
     comments = data_logic.get_comments_by_id(question_id)
     answers = data_logic.get_answers(question_id)
+    check_vote = data_logic.check_vote('question', session['user_id'], question_id)
     return render_template('questions_bs.html',
                            question=question,
                            comments=comments,
-                           answers=answers
+                           answers=answers,
+                           users_voted=check_vote
                            )
 
 

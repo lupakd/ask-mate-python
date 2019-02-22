@@ -16,9 +16,10 @@
 				</div>
 				<div class="col-md-2">
 
-					<button type="button" class="btn btn-success">
+					<a href="{{ url_for('edit', question_id=question[0].id)}}"><button type="button" class="btn btn-success">
 						Edit
 					</button>
+                    </a>
 				</div>
 			</div>
 			<hr>
@@ -27,16 +28,17 @@
 	<div class="row">
 		<div class="col-md-2">
 			<div class="btn-group btn-group-vertical btn-sm px-2" role="group">
-				 
-				<button class="btn btn-outline-secondary" type="button">
-					Up
-				</button>
 				<button class="btn btn-outline-info" type="button">
-					Vote data
-				</button> 
-				<button class="btn btn-outline-secondary" type="button">
-					Down
-				</button> 
+					{{ question[0].vote_number }}
+				</button>
+				 {% if session['user_id'] not in question[0]['voted_users'] %}
+				<a class="{{ not_logged_hidden_class() }}" href="{{ url_for('vote_up', question_id=question[0].id)}}"><button class="btn btn-outline-secondary" type="button">
+					/\
+				</button></a>
+				<a class="{{ not_logged_hidden_class() }}" href="{{ url_for('vote_down', question_id=question[0].id)}}"><button class="btn btn-outline-secondary" type="button">
+					\/
+				</button></a>
+                {% endif %}
 				<button class="btn btn-outline-success" type="button">
 					Accepted
 				</button>
@@ -46,7 +48,10 @@
 			<div>
 				{{  question[0].message  }}
 			</div>
-			
+			<a href="{{ url_for('add_answer', question_id=question[0].id)}}"><button type="button" class="btn btn-success">
+						Add Answer
+            </button>
+            </a>
 			<div class="row">
 				<div class="col-md-1">
 				</div>
@@ -67,26 +72,31 @@
 			</div>
 		</div>
 	</div>
+	</div>
+{% for line in answers %}
+<div class="container-fluid">
+
 	<div class="row">
 		<div class="col-md-1 px-2">
 			<div class="btn-group btn-group-vertical" role="group">
-				 
+
 				<button class="btn btn-secondary" type="button">
-					Left
-				</button> 
-				<button class="btn btn-secondary" type="button">
-					Center
-				</button> 
-				<button class="btn btn-secondary" type="button">
-					Right
-				</button> 
+					{{line.vote_number}}
+				</button>
+                {% if session['user_id'] not in line['voted_users'] %}
+				<a class="{{ not_logged_hidden_class() }}" href="{{url_for('vote_up_answer',question_id=question[0].id,answer_id=line.id)}}"><button class="btn btn-secondary" type="button">
+					/\
+				</button></a>
+				<a class="{{ not_logged_hidden_class() }}" href="{{url_for('vote_down_answer',question_id=question[0].id,answer_id=line.id)}}"><button class="btn btn-secondary" type="button">
+					\/
+				</button></a>
+                {% endif %}
 				<button class="btn btn-secondary" type="button">
 					Justify
 				</button>
 			</div>
 		</div>
 		<div class="col-md-11">
-			{% for line in answers %}
 			<p>
 				{{  line.message  }}
 			</p>
@@ -108,9 +118,11 @@
 					{% endfor %}
 				</div>
 			</div>
-			{% endfor %}
+
 		</div>
 	</div>
+</div>
+{% endfor %}
 </div>
 
 {%endblock%}

@@ -42,8 +42,8 @@ def answer(cursor, message, question_id, user_id):
     }
     cursor.execute(
         sql.SQL("""
-               INSERT INTO answer (submission_time, vote_number, question_id, message, image, user_id)
-               VALUES (%(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s, %(user_id)s); 
+               INSERT INTO answer (submission_time, vote_number, question_id, message, image, user_id,voted_users)
+               VALUES (%(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s, %(user_id)s,'{}'); 
         """), data
     )
 

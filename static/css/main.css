@@ -36,3 +36,8 @@ body {
 .sticky + .content {
   padding-top: 102px;
 }
+
+.px-2 {
+  padding-left: 2% !important;
+  padding-right: 2% !important;
+}

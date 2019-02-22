@@ -59,6 +59,9 @@ def display_question(question_id):
                            user_voted=check_vote,
                            )
 
+@app.route('/questions-test')
+def display_question_test():
+    return render_template('questions_bs.html')
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def add_answer(question_id):

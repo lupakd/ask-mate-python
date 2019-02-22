@@ -279,3 +279,14 @@ INNER JOIN question q ON a.question_id = q.id
 WHERE  a.user_id = %(id)s;
      """, {"id": user_id})
     return cursor.fetchall()
+
+
+
+@connection.connection_handler
+def update_accepted_answer(cursor, question_id, answer_id):
+    cursor.execute("""
+    UPDATE question
+SET question.accepted_answer_id = %(a_id)s
+WHERE question.id = %(q_id)s;
+    """, {"q_id": question_id, "a_id": answer_id})
+

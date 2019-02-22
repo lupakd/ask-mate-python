@@ -251,13 +251,17 @@ def route_logout():
 
 
 @app.route('/user/<user_id>')
-def user_page(user_id):
+def user_pageuser_id(user_id):
     return render_template('user_page.html',
                            questions=data_logic.get_questions_for_question(user_id),
                            answers=data_logic.get_questions_for_answers(user_id),
                            comments=data_logic.get_questions_for_comments(user_id))
 
 
+@app.route('/accept')
+def accept_answer(question_id, answer_id):
+    data_logic.update_accepted_answer(question_id, answer_id)
+    redirect('/question/'+str(question_id))
 
 if __name__ == "__main__":
     app.run(debug=True,

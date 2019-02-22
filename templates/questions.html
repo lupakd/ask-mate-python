@@ -27,7 +27,6 @@
     <h3>Comments</h3>
 <table class="center">
     <tr>
-        <th>Comment ID</th>
         <th>Comment</th>
         <th>Submission time</th>
         <th>Edits</th>
@@ -35,7 +34,6 @@
     {% for comment in comments %}
     {% if comment['question_id'] == q_id and not comment['answer_id']  %}
         <tr>
-            <td>{{ comment['id'] }}</td>
             <td>{{ comment['message'] }}</td>
             <td>{{ comment['submission_time'] }}</td>
             <td>{{ comment['edited_count'] }}</td>
@@ -79,7 +77,6 @@
     {% for comment in comments %}
     {% if comment['answer_id'] == line['id'] %}
         <tr>
-            <td>{{ comment['id'] }}</td>
             <td>{{ comment['message'] }}</td>
             <td>{{ comment['submission_time'] }}</td>
             <td>{{ comment['edited_count'] }}</td>

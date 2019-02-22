@@ -10,7 +10,7 @@
             <tbody>
             {% for user in users %}
             <tr>
-                <td>{{ user["user_name"] }}</td>
+                <td><a href="{{ url_for('user_page' , user_id=user['id']) }}">{{ user["user_name"] }}</a></td>
                 <td>{{ user["reputation"] }}</td>
                 <td>{{ user['registration_time'] }}</td>
             </tr>

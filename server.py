@@ -48,6 +48,7 @@ def route_list_users():
 def display_question(question_id):
     data_logic.add_view(question_id)
     answers = data_logic.get_all_rows('answer', 'submission_time')
+    users = data_logic.get_all_rows('users', 'registration_time')
     comments = data_logic.get_all_rows('comment', 'submission_time')
     question = data_logic.get_question_by_id(question_id)
     check_vote = data_logic.check_vote('question', session['user_id'], question_id)
@@ -57,6 +58,7 @@ def display_question(question_id):
                            question=question,
                            comments=comments,
                            user_voted=check_vote,
+                           users=users
                            )
 
 @app.route('/questions-test')
@@ -256,6 +258,19 @@ def user_page(user_id):
                            questions=data_logic.get_questions_for_question(user_id),
                            answers=data_logic.get_questions_for_answers(user_id),
                            comments=data_logic.get_questions_for_comments(user_id))
+
+@app.route('/question-test/<question_id>')
+def question_page_test(question_id):
+    data_logic.add_view(question_id)
+    question = data_logic.get_question(question_id)
+    comments = data_logic.get_comments_by_id(question_id)
+    answers = data_logic.get_answers(question_id)
+    return render_template('questions_bs.html',
+                           question=question,
+                           comments=comments,
+                           answers=answers
+                           )
+
 
 
 

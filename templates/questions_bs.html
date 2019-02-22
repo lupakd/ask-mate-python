@@ -10,7 +10,7 @@
 				<div class="col-md-10">
 					<div class="page-header">
 						<h1>
-							Question title
+							{{ question[0]['title'] }}
 						</h1>
 					</div>
 				</div>
@@ -44,22 +44,25 @@
 		</div>
 		<div class="col-md-10">
 			<div>
-				Question message:
-			</div> Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam eget sapien sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere diam ut cursus. <em>Morbi commodo sodales nisi id sodales. Proin consectetur, nisi id commodo imperdiet, metus nunc consequat lectus, id bibendum diam velit et dui.</em> Proin massa magna, vulputate nec bibendum nec, posuere nec lacus. <small>Aliquam mi erat, aliquam vel luctus eu, pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.</small>
+				{{  question[0].message  }}
+			</div>
 			
 			<div class="row">
 				<div class="col-md-1">
 				</div>
 				<div class="col-md-11">
+					{% for line in comments %}
+						{% if line.answer_id == None %}
 					<blockquote class="blockquote">
 						<p class="mb-0">
-							Comment:
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+							{{ line.message }}
 						</p>
 						<footer class="blockquote-footer">
-							Someone famous in <cite>Source Title</cite>
+							Commented by <cite>{{ line.user_name}}</cite>
 						</footer>
 					</blockquote>
+					{% endif %}
+					{% endfor %}
 				</div>
 			</div>
 		</div>
@@ -83,25 +86,29 @@
 			</div>
 		</div>
 		<div class="col-md-11">
+			{% for line in answers %}
 			<p>
-				Answer:
-				Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam eget sapien sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere diam ut cursus. <em>Morbi commodo sodales nisi id sodales. Proin consectetur, nisi id commodo imperdiet, metus nunc consequat lectus, id bibendum diam velit et dui.</em> Proin massa magna, vulputate nec bibendum nec, posuere nec lacus. <small>Aliquam mi erat, aliquam vel luctus eu, pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.</small>
+				{{  line.message  }}
 			</p>
 			<div class="row">
 				<div class="col-md-1">
 				</div>
 				<div class="col-md-11">
+					{% for comment_line in comments %}
+						{% if line.id == comment_line.answer_id %}
 					<blockquote class="blockquote">
 						<p class="mb-0">
-							Comment:
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+						{{ comment_line.message  }}
 						</p>
 						<footer class="blockquote-footer">
-							Someone famous in <cite>Source Title</cite>
+							Commented by <cite>{{ comment_line.user_name}}</cite>
 						</footer>
 					</blockquote>
+					{% endif %}
+					{% endfor %}
 				</div>
 			</div>
+			{% endfor %}
 		</div>
 	</div>
 </div>

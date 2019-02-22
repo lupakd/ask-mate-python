@@ -279,3 +279,40 @@ INNER JOIN question q ON a.question_id = q.id
 WHERE  a.user_id = %(id)s;
      """, {"id": user_id})
     return cursor.fetchall()
+
+
+
+
+
+
+
+
+@connection.connection_handler
+def get_question(cursor,question_id):
+    cursor.execute("""
+                    SELECT * FROM question
+                    WHERE id = %(question_id)s;
+    """, {"question_id":question_id})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_answers(cursor,question_id):
+    cursor.execute("""
+                    SELECT * FROM answer
+                    WHERE question_id = %(question_id)s;
+    """, {"question_id":question_id})
+    return cursor.fetchall()
+
+
+
+@connection.connection_handler
+def get_comments_by_id(cursor,object_id):
+    cursor.execute(
+        sql.SQL("""SELECT comment.message, question_id,answer_id,comment.submission_time,u.user_name FROM comment
+                    JOIN question ON (comment.question_id=question.id)
+                    LEFT JOIN users u on comment.user_id = u.id
+                    WHERE question_id = %(object_id)s
+                    ORDER BY answer_id DESC, comment.submission_time ASC ;
+        """),{"object_id":object_id})
+    return cursor.fetchall()

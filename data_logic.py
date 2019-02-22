@@ -316,3 +316,14 @@ def get_comments_by_id(cursor,object_id):
                     ORDER BY answer_id DESC, comment.submission_time ASC ;
         """),{"object_id":object_id})
     return cursor.fetchall()
+
+
+
+@connection.connection_handler
+def update_accepted_answer(cursor, question_id, answer_id):
+    cursor.execute("""
+    UPDATE question
+SET question.accepted_answer_id = %(a_id)s
+WHERE question.id = %(q_id)s;
+    """, {"q_id": question_id, "a_id": answer_id})
+

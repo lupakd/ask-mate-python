@@ -52,6 +52,9 @@
     <div class="border>">
        {% for line in answers %}
           {% if q_id == line["question_id"] %}
+        {%if line.accepted == true%}
+        <h2>THIS IS SOME REAL SHIT</h2>
+        {%endif%}
     <p>{{ line["message"] }}</p>
     <p>{{ line["vote_number"] }}</p>
     <p>{{ line["submission_time"] }}</p>

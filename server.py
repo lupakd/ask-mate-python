@@ -275,6 +275,10 @@ def question_page_test(question_id):
 
 
 
+@app.route('/accept')
+def accept_answer(question_id, answer_id):
+    data_logic.update_accepted_answer(question_id, answer_id)
+    redirect('/question/'+str(question_id))
 
 if __name__ == "__main__":
     app.run(debug=True,

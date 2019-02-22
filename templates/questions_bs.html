@@ -39,9 +39,7 @@
 					\/
 				</button></a>
                 {% endif %}
-				<button class="btn btn-outline-success" type="button">
-					Accepted
-				</button>
+
 			</div>
 		</div>
 		<div class="col-md-10">
@@ -70,9 +68,15 @@
 					{% endfor %}
 				</div>
 			</div>
+
 		</div>
 	</div>
+		<div class="row">
+		<div class="col-md-12"><hr>
+		</div></div>
 	</div>
+
+
 {% for line in answers %}
 <div class="container-fluid">
 
@@ -90,10 +94,12 @@
 				<a class="{{ not_logged_hidden_class() }}" href="{{url_for('vote_down_answer',question_id=question[0].id,answer_id=line.id)}}"><button class="btn btn-secondary" type="button">
 					\/
 				</button></a>
-                {% endif %}
+                {% endif  %}
+				{%if question[0].accepted_answer_id == line.id %}
 				<button class="btn btn-secondary" type="button">
-					Justify
+				\o/
 				</button>
+				{%endif%}
 			</div>
 		</div>
 		<div class="col-md-11">
@@ -122,6 +128,9 @@
 		</div>
 	</div>
 </div>
+<div class="row">
+		<div class="col-md-12"><hr>
+		</div></div>
 {% endfor %}
 </div>
 
